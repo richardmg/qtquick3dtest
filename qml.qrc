@@ -2,5 +2,10 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>teapot.mesh</file>
+        <file>Lowpolylandscape.qml</file>
+        <file>meshes/Plane.mesh</file>
+        <file>Sun.qml</file>
+        <file>ConeLight.qml</file>
+        <file>Sky.qml</file>
     </qresource>
 </RCC>
