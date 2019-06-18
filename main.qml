@@ -30,101 +30,42 @@ Window {
             z: -600
             y: 200
             rotation: Qt.vector3d(15, 0, 0)
+
+            Arrow {
+                z: 400
+                rotation: Qt.vector3d(0, 90, 0)
+            }
         }
 
         Sun {
             secondsPerOrbit: 10
         }
 
+        ConeLight {
+            id: ambient
+            y: 400
+            diffuseColor: Qt.rgba(0.4, 0.5, 0.0, 1.0)
+            rotation: Qt.vector3d(60, 0, 0)
+            brightness: 30
+//            gizmo: Gizmo.Light
+        }
+
         Lowpolylandscape {}
+
     }
 
     Sky {
         anchors.fill: parent
         DemonView3D {
+            id: demonview
             anchors.fill: parent
             scene: scene
-
-            property int foo: 0
-            focus: true
-            Keys.onPressed: {
-                switch (event.key) {
-                case Qt.Key_W:
-                case Qt.Key_Up:
-                    wasdController.forwardPressed();
-                    break;
-                case Qt.Key_S:
-                case Qt.Key_Down:
-                    wasdController.backPressed();
-                    break;
-                case Qt.Key_A:
-                case Qt.Key_Left:
-                    wasdController.leftPressed();
-                    break;
-                case Qt.Key_D:
-                case Qt.Key_Right:
-                    wasdController.rightPressed();
-                    break;
-                case Qt.Key_R:
-                case Qt.Key_PageUp:
-                    wasdController.upPressed();
-                    break;
-                case Qt.Key_F:
-                case Qt.Key_PageDown:
-                    wasdController.downPressed();
-                    break;
-                }
-            }
-
-            Keys.onReleased: {
-                switch (event.key) {
-                case Qt.Key_W:
-                case Qt.Key_Up:
-                    wasdController.forwardReleased();
-                    break;
-                case Qt.Key_S:
-                case Qt.Key_Down:
-                    wasdController.backReleased();
-                    break;
-                case Qt.Key_A:
-                case Qt.Key_Left:
-                    wasdController.leftReleased();
-                    break;
-                case Qt.Key_D:
-                case Qt.Key_Right:
-                    wasdController.rightReleased();
-                    break;
-                case Qt.Key_R:
-                case Qt.Key_PageUp:
-                    wasdController.upReleased();
-                    break;
-                case Qt.Key_F:
-                case Qt.Key_PageDown:
-                    wasdController.downReleased();
-                    break;
-                }
-            }
-
         }
     }
 
     WasdController {
         id: wasdController
         controlledObject: camera
+        view: demonview
     }
-
-    MouseArea {
-        anchors.fill: parent
-        onPressed: {
-            wasdController.mousePressed(mouse);
-        }
-        onReleased: {
-            wasdController.mouseReleased(mouse);
-        }
-
-        onPositionChanged: {
-            wasdController.mouseMoved(Qt.vector2d(mouse.x, mouse.y));
-        }
-    }
-
 }

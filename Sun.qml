@@ -57,11 +57,4 @@ DemonNode {
         }
     }
 
-    ConeLight {
-        id: ambient
-        y: 400
-        diffuseColor: Qt.rgba(0.4, 0.5, 0.0, 1.0)
-        rotation: Qt.vector3d(60, 0, 0)
-        brightness: 30
-    }
 }
