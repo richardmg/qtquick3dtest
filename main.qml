@@ -26,15 +26,10 @@ Window {
         id: scene
 
         DemonCamera {
-            id: camera
+            id: camera1
             z: -600
             y: 200
             rotation: Qt.vector3d(15, 0, 0)
-
-            Arrow {
-                z: 400
-                rotation: Qt.vector3d(0, 90, 0)
-            }
         }
 
         Sun {
@@ -50,7 +45,9 @@ Window {
 //            gizmo: Gizmo.Light
         }
 
-        Lowpolylandscape {}
+        Lowpolylandscape {
+            id: landscape
+        }
 
     }
 
@@ -61,11 +58,26 @@ Window {
             anchors.fill: parent
             scene: scene
         }
+        DemonView3D {
+            id: overlay
+            anchors.fill: parent
+            scene: DemonNode {
+                DemonCamera {
+                    position: camera1.position
+                    rotation: camera1.rotation
+//                    projectionMode: DemonCamera.Orthographic
+                }
+
+                Gizmo {
+                    target: ambient
+                }
+            }
+        }
     }
 
     WasdController {
         id: wasdController
-        controlledObject: camera
+        controlledObject: camera1
         view: demonview
     }
 }

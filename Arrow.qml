@@ -7,13 +7,13 @@ DemonModel {
     rotationOrder: DemonNode.XYZr
     orientation: DemonNode.RightHanded
     source: "meshes/Arrow.mesh"
-    DemonDefaultMaterial {
-        id: defaultMaterial_material
+
+    property alias color: material.emissiveColor
+
+    materials: DemonDefaultMaterial {
+        id: material
         emissiveColor: Qt.rgba(1.0, 0.0, 0.0, 1.0)
         lighting: DemonDefaultMaterial.NoLighting
     }
-    materials: [
-        defaultMaterial_material
-    ]
 }
 
