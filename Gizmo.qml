@@ -5,10 +5,10 @@ DemonNode {
     id: root
     property DemonNode target: root
 
-    x: target.globalPosition.x
-    y: target.globalPosition.y
-    z: target.globalPosition.z
-    rotation: target.rotation // should be target.globalRotation
+//    x: target.globalPosition.x
+//    y: target.globalPosition.y
+//    z: target.globalPosition.z
+//    rotation: target.rotation // should be target.globalRotation
 //    Component.onCompleted: parent = target
 //    onTargetChanged: parent = target
 
