@@ -1,4 +1,4 @@
-import QtQuick 2.14
+import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtDemon 1.0
 import QtDemonHelpers 1.0
@@ -26,7 +26,9 @@ Window {
 
         DemonCamera {
             id: camera1
+//            x: 400
             z: -600
+//            projectionMode: DemonCamera.Orthographic
             //y: 200
             //rotation: Qt.vector3d(15, 0, 0)
         }
@@ -44,12 +46,22 @@ Window {
 //            gizmo: Gizmo.Light
         }
 
-        Lowpolylandscape {
-            id: landscape
+//        Lowpolylandscape {
+//            id: landscape
+//        }
+
+        AxisHelper {
+            enableAxisLines: true
+            enableXZGrid: false
+            enableYZGrid: false
+            enableXYGrid: true
         }
 
         Gizmo {
             id: gizmo
+//            x: 100
+//            y: 100
+//            z: 10
         }
 
     }
@@ -66,7 +78,7 @@ Window {
         }
     }
 
-    Sky {
+    Item {
         anchors.fill: parent
         DemonView3D {
             id: demonview
@@ -86,8 +98,32 @@ Window {
             y: 0
             width: parent.width
             height: parent.height
+            speed: 0.1
+//            mouseEnabled: false
         }
 
+        PointHandler {
+            acceptedButtons: Qt.RightButton
+            onPointChanged: {
+                return;
+
+                if (!point.pressure)
+                    return
+
+                var screenPosNear = Qt.vector3d(point.position.x, point.position.y, camera1.clipNear + 10);
+                var worldPosNear = demonview.viewToWorld(screenPosNear)
+
+                var screenPosFar = Qt.vector3d(point.position.x, point.position.y, camera1.clipNear + 100);
+                var worldPosFar = demonview.viewToWorld(screenPosFar)
+
+                var arrow = ray.createObject(scene)
+                arrow.position = worldPosNear
+                //arrow.lookAtGlobal(worldPosFar)
+                arrow.rotation = camera1.rotation
+                print("end pos:", arrow.position, arrow.rotation)
+
+            }
+        }
 
 //        DemonView3D {
 //            id: overlay
@@ -108,49 +144,39 @@ Window {
 
     Connections {
         target: camera1
-        onPositionChanged: update()
-        onRotationChanged: update()
-
-        function update()
-        {
-            var gizmoScreenPos = demonview.worldToView(gizmo.position)
-
-            var gizmoSizePos = Qt.vector3d(gizmoScreenPos.x + 50, gizmoScreenPos.y, gizmoScreenPos.z)
-            var gizmoSizeWorldPos = demonview.viewToWorld(gizmoSizePos)
-
-            var p2 = gizmo.position;
-
-            var v = Qt.vector3d(p2.x, p2.y, p2.z);
-            v.x -= gizmoSizeWorldPos.x
-            v.y -= gizmoSizeWorldPos.y
-            v.z -= gizmoSizeWorldPos.z
-            var len = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z)
-            print("world length:", len);
-        }
+        onPositionChanged: updateGizmo()
+        onRotationChanged: updateGizmo()
     }
 
-    PointHandler {
-        acceptedButtons: Qt.RightButton
-        onPointChanged: {
-            return;
+//    Timer {
+//        running: true
+//        interval: 1000
+//        repeat: true
+//        onTriggered: updateGizmo()
+//    }
 
-
-            if (!point.pressure)
-                return
-
-            var screenPosNear = Qt.vector3d(point.position.x, point.position.y, camera1.clipNear + 10);
-            var worldPosNear = demonview.viewToWorld(screenPosNear)
-
-            var screenPosFar = Qt.vector3d(point.position.x, point.position.y, camera1.clipNear + 100);
-            var worldPosFar = demonview.viewToWorld(screenPosFar)
-
-            var arrow = ray.createObject(scene)
-            arrow.position = worldPosNear
-            //arrow.lookAtGlobal(worldPosFar)
-            arrow.rotation = camera1.rotation
-            print("end pos:", arrow.position, arrow.rotation)
-
+    function updateGizmo()
+    {
+        var gizmoScreenPos = demonview.worldToView(gizmo.position)
+        if (gizmoScreenPos.x === -1) {
+            print("gizmo not visible!")
+            return
         }
+        var gizmoWorldPos = demonview.viewToWorld(gizmoScreenPos)
+        gizmo.position = gizmoWorldPos
+//        print("screen pos:", gizmoScreenPos, "world pos:", gizmoWorldPos, "cam pos:", camera1.position);
+
+        //            var gizmoSizePos = Qt.vector3d(gizmoScreenPos.x + 50, gizmoScreenPos.y, gizmoScreenPos.z)
+        //            var gizmoSizeWorldPos = demonview.viewToWorld(gizmoSizePos)
+
+        //            var p2 = gizmo.position;
+
+        //            var v = Qt.vector3d(p2.x, p2.y, p2.z);
+        //            v.x -= gizmoSizeWorldPos.x
+        //            v.y -= gizmoSizeWorldPos.y
+        //            v.z -= gizmoSizeWorldPos.z
+        //            var len = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z)
+        //            print("world length:", len);
     }
 
 }
