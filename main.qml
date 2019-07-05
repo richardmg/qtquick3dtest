@@ -9,6 +9,8 @@ Window {
     height: 480
     visible: true
 
+    property bool gizmoScaleOn: true
+
     Timer {
         id: clock
         property real time: 12
@@ -26,11 +28,10 @@ Window {
 
         DemonCamera {
             id: camera1
-//            x: 400
             z: -600
 //            projectionMode: DemonCamera.Orthographic
-            //y: 200
-            //rotation: Qt.vector3d(15, 0, 0)
+            y: 200
+            rotation: Qt.vector3d(15, 0, 0)
         }
 
         Sun {
@@ -52,17 +53,24 @@ Window {
 
         AxisHelper {
             enableAxisLines: true
-            enableXZGrid: false
+            enableXZGrid: true
             enableYZGrid: false
             enableXYGrid: true
         }
 
         Gizmo {
             id: gizmo
-//            x: 100
-//            y: 100
-//            z: 10
         }
+//        Arrow {
+//            id: gizmo
+//            rotation: Qt.vector3d(-90, 0, 0)
+//            color: "red"
+//        }
+//        Arrow {
+//            id: gizmo2
+//            rotation: Qt.vector3d(-90, 0, 0)
+//            color: "blue"
+//        }
 
     }
 
@@ -85,44 +93,6 @@ Window {
             anchors.fill: parent
             scene: scene
             camera: camera1
-            Rectangle {
-                width: 100
-                height: 100
-                color: "yellow"
-            }
-        }
-
-        WasdController {
-            controlledObject: camera1
-            x: 0
-            y: 0
-            width: parent.width
-            height: parent.height
-            speed: 0.1
-//            mouseEnabled: false
-        }
-
-        PointHandler {
-            acceptedButtons: Qt.RightButton
-            onPointChanged: {
-                return;
-
-                if (!point.pressure)
-                    return
-
-                var screenPosNear = Qt.vector3d(point.position.x, point.position.y, camera1.clipNear + 10);
-                var worldPosNear = demonview.viewToWorld(screenPosNear)
-
-                var screenPosFar = Qt.vector3d(point.position.x, point.position.y, camera1.clipNear + 100);
-                var worldPosFar = demonview.viewToWorld(screenPosFar)
-
-                var arrow = ray.createObject(scene)
-                arrow.position = worldPosNear
-                //arrow.lookAtGlobal(worldPosFar)
-                arrow.rotation = camera1.rotation
-                print("end pos:", arrow.position, arrow.rotation)
-
-            }
         }
 
 //        DemonView3D {
@@ -142,41 +112,85 @@ Window {
 //        }
     }
 
+        WasdController {
+            controlledObject: camera1
+            x: 0
+            y: 0
+            width: parent.width
+            height: parent.height
+            speed: 0.1
+
+            Keys.onPressed: {
+                if (event.key == Qt.Key_Space)
+                    gizmoScaleOn = !gizmoScaleOn
+                print("scaling on:", gizmoScaleOn)
+            }
+        }
+
+
+//        PointHandler {
+//            acceptedButtons: Qt.RightButton
+//            onPointChanged: {
+//                if (!point.pressure)
+//                    return
+
+//                var screenPosNear = Qt.vector3d(point.position.x, point.position.y, 0);
+//                var worldPosNear = demonview.viewToWorld(screenPosNear)
+
+//                var screenPosFar = Qt.vector3d(point.position.x, point.position.y, 10);
+//                var worldPosFar = demonview.viewToWorld(screenPosFar)
+
+//                var arrow = ray.createObject(scene)
+//                arrow.position = worldPosFar
+//                //arrow.lookAtGlobal(worldPosFar)
+//            }
+//        }
+
     Connections {
         target: camera1
         onPositionChanged: updateGizmo()
         onRotationChanged: updateGizmo()
     }
 
-//    Timer {
-//        running: true
-//        interval: 1000
-//        repeat: true
-//        onTriggered: updateGizmo()
-//    }
+    Timer {
+        interval: 100
+        running: true
+        onTriggered: updateGizmo()
+    }
+
+    function distVec3(v1, v2)
+    {
+        v1.x -= v2.x
+        v1.y -= v2.y
+        v1.z -= v2.z
+        return Math.sqrt(v1.x * v1.x + v1.y * v1.y + v1.z * v1.z)
+    }
 
     function updateGizmo()
     {
-        var gizmoScreenPos = demonview.worldToView(gizmo.position)
-        if (gizmoScreenPos.x === -1) {
-            print("gizmo not visible!")
+        if (!gizmoScaleOn)
+            return;
+
+        var wantedScreenLength = 100
+
+        var pos1World = gizmo.position
+        var pos1Screen = camera1.worldToViewport(pos1World)
+        if (pos1Screen.x === -1)
             return
-        }
-        var gizmoWorldPos = demonview.viewToWorld(gizmoScreenPos)
-        gizmo.position = gizmoWorldPos
-//        print("screen pos:", gizmoScreenPos, "world pos:", gizmoWorldPos, "cam pos:", camera1.position);
 
-        //            var gizmoSizePos = Qt.vector3d(gizmoScreenPos.x + 50, gizmoScreenPos.y, gizmoScreenPos.z)
-        //            var gizmoSizeWorldPos = demonview.viewToWorld(gizmoSizePos)
+        // Note: vec3 should really be copy by value, not pointer?
+        // Centeralize positions so that we don't change scale when
+        // the camera rotates without any change of position
+        var pos2Screen = Qt.vector3d(0.6, 0, pos1Screen.z)
+        pos1Screen.x = 0.4
+        pos1Screen.y = 0
 
-        //            var p2 = gizmo.position;
+        var pos1BackWorld = camera1.viewportToWorld(pos1Screen)
+        var pos2BackWorld = camera1.viewportToWorld(pos2Screen)
+        var worldDist = distVec3(pos1BackWorld, pos2BackWorld)
 
-        //            var v = Qt.vector3d(p2.x, p2.y, p2.z);
-        //            v.x -= gizmoSizeWorldPos.x
-        //            v.y -= gizmoSizeWorldPos.y
-        //            v.z -= gizmoSizeWorldPos.z
-        //            var len = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z)
-        //            print("world length:", len);
+        var scale = worldDist / wantedScreenLength
+        gizmo.scale = Qt.vector3d(scale, scale, scale)
     }
 
 }
