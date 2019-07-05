@@ -3,7 +3,6 @@ import QtDemon 1.0
 
 DemonNode {
     id: root
-    property DemonNode target: root
     property DemonView3D view: undefined; // a node can be drawn by several views. But a gizmo can only belong to one view...
     property real unscaledScreenLength: 10 // in Orthographic projection
     property real wantedScreenLength: 100
@@ -52,6 +51,7 @@ DemonNode {
 
     function updateGizmo()
     {
+        // calculate scale based on distance to camera
         var distanceToCamera = distVec3(position, view.camera.position)
         var center = view.width / 2
         var pos1Screen = Qt.vector3d(center - wantedScreenLength / 2, 0, distanceToCamera)

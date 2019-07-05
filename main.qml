@@ -15,7 +15,7 @@ Window {
         readonly property real dawn: 6
         readonly property real dusk: 18
         property real msPerHour: 1000
-        //running: true
+        running: true
         repeat: true
         interval: msPerHour
         onTriggered: time++
@@ -45,31 +45,15 @@ Window {
 //            gizmo: Gizmo.Light
         }
 
-//        Lowpolylandscape {
-//            id: landscape
-//        }
+        Lowpolylandscape {
+            id: landscape
+        }
 
 //        AxisHelper {
 //            enableAxisLines: true
 //            enableXZGrid: true
 //            enableYZGrid: false
 //            enableXYGrid: true
-//        }
-
-        Gizmo {
-            id: gizmo
-            view: demonview
-//            target: ambient
-        }
-//        Arrow {
-//            id: gizmo
-//            rotation: Qt.vector3d(-90, 0, 0)
-//            color: "red"
-//        }
-//        Arrow {
-//            id: gizmo2
-//            rotation: Qt.vector3d(-90, 0, 0)
-//            color: "blue"
 //        }
 
     }
@@ -93,14 +77,6 @@ Window {
             anchors.fill: parent
             scene: scene
             camera: camera1
-        }
-
-        Rectangle {
-            width: 100
-            height: 10
-            x: 100
-            y: 100
-            color: "yellow"
         }
 
 //        DemonView3D {
