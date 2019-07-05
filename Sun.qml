@@ -44,10 +44,6 @@ DemonNode {
             diffuseColor: Qt.rgba(0.4, 0.5, 0.0, 1.0)
             brightness: 70
             rotation: Qt.vector3d(90, 0, 0)
-            Gizmo {
-                id: gizmo
-                view: demonview
-            }
         }
 
         ConeLight {

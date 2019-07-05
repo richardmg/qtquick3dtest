@@ -3,13 +3,9 @@ import QtDemon 1.0
 
 DemonLight {
     id: light
-    DemonModel {
-        source: "#Cone"
-        rotation: Qt.vector3d(90, 0, 0)
-        materials: DemonDefaultMaterial {
-            diffuseColor: "yellow"
-            lighting: DemonDefaultMaterial.NoLighting
-        }
+    Gizmo {
+        id: gizmo
+        view: demonview
     }
 }
 

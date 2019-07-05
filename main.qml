@@ -70,7 +70,7 @@ Window {
         }
     }
 
-    Item {
+    Sky {
         anchors.fill: parent
         DemonView3D {
             id: demonview

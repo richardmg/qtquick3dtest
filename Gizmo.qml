@@ -5,7 +5,8 @@ DemonNode {
     id: root
     property DemonView3D view: undefined; // a node can be drawn by several views. But a gizmo can only belong to one view...
     property real unscaledScreenLength: 10 // in Orthographic projection
-    property real wantedScreenLength: 100
+    property real wantedScreenLength: 70
+    property bool isLight: true
 
 //    x: target.globalPosition.x
 //    y: target.globalPosition.y
@@ -34,19 +35,21 @@ DemonNode {
     Arrow {
         id: arrowX
         rotation: Qt.vector3d(0, 90, 0)
+        visible: !isLight
         color: "red"
     }
 
     Arrow {
         id: arrowY
         rotation: Qt.vector3d(-90, 0, 0)
+        visible: !isLight
         color: "blue"
     }
 
     Arrow {
         id: arrowZ
         rotation: Qt.vector3d(0, 180, 0)
-        color: "green"
+        color: isLight ? "yellow" : "green"
     }
 
     function updateGizmo()
