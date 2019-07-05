@@ -9,8 +9,6 @@ Window {
     height: 480
     visible: true
 
-    property bool gizmoScaleOn: true
-
     Timer {
         id: clock
         property real time: 12
@@ -60,6 +58,9 @@ Window {
 
         Gizmo {
             id: gizmo
+            view: demonview
+            unscaledScreenLength: 10
+            wantedScreenLength: 100
         }
 //        Arrow {
 //            id: gizmo
@@ -127,15 +128,7 @@ Window {
             width: parent.width
             height: parent.height
             speed: 0.1
-
-            Keys.onPressed: {
-                if (event.key !== Qt.Key_Space)
-                    return
-                gizmoScaleOn = !gizmoScaleOn
-                print("scaling on:", gizmoScaleOn)
-            }
         }
-
 
 //        PointHandler {
 //            acceptedButtons: Qt.RightButton
@@ -154,52 +147,5 @@ Window {
 //                //arrow.lookAtGlobal(worldPosFar)
 //            }
 //        }
-
-    Connections {
-        target: camera1
-        onPositionChanged: updateGizmo()
-        onRotationChanged: updateGizmo()
-    }
-
-    Timer {
-        interval: 100
-        running: true
-        onTriggered: updateGizmo()
-    }
-
-    function distVec3(v1, v2)
-    {
-        v1.x -= v2.x
-        v1.y -= v2.y
-        v1.z -= v2.z
-        return Math.sqrt(v1.x * v1.x + v1.y * v1.y + v1.z * v1.z)
-    }
-
-    function updateGizmo()
-    {
-        if (!gizmoScaleOn)
-            return;
-
-        var unscaledScreenLength = 10 // in Orthographic projection
-        var wantedScreenLength = 50
-
-        var pos1World = gizmo.position
-        var pos1Screen = demonview.worldToView(pos1World)
-
-        // Note: vec3 should really be copy by value, not pointer?
-        // Centeralize positions so that we don't change scale when
-        // the camera rotates without any change of position
-        var center = demonview.width / 2
-        var pos2Screen = Qt.vector3d(center - wantedScreenLength / 2, 0, pos1Screen.z)
-        pos1Screen.x = center + wantedScreenLength / 2
-        pos1Screen.y = 0
-
-        var pos1BackWorld = demonview.viewToWorld(pos1Screen)
-        var pos2BackWorld = demonview.viewToWorld(pos2Screen)
-        var worldDist = distVec3(pos1BackWorld, pos2BackWorld)
-
-        var scale = worldDist / unscaledScreenLength
-        gizmo.scale = Qt.vector3d(scale, scale, scale)
-    }
 
 }
