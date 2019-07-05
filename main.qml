@@ -51,12 +51,12 @@ Window {
 //            id: landscape
 //        }
 
-        AxisHelper {
-            enableAxisLines: true
-            enableXZGrid: true
-            enableYZGrid: false
-            enableXYGrid: true
-        }
+//        AxisHelper {
+//            enableAxisLines: true
+//            enableXZGrid: true
+//            enableYZGrid: false
+//            enableXYGrid: true
+//        }
 
         Gizmo {
             id: gizmo
@@ -95,6 +95,14 @@ Window {
             camera: camera1
         }
 
+        Rectangle {
+            width: 100
+            height: 10
+            x: 100
+            y: 100
+            color: "yellow"
+        }
+
 //        DemonView3D {
 //            id: overlay
 //            anchors.fill: parent
@@ -121,8 +129,9 @@ Window {
             speed: 0.1
 
             Keys.onPressed: {
-                if (event.key == Qt.Key_Space)
-                    gizmoScaleOn = !gizmoScaleOn
+                if (event.key !== Qt.Key_Space)
+                    return
+                gizmoScaleOn = !gizmoScaleOn
                 print("scaling on:", gizmoScaleOn)
             }
         }
@@ -171,25 +180,25 @@ Window {
         if (!gizmoScaleOn)
             return;
 
-        var wantedScreenLength = 100
+        var unscaledScreenLength = 10 // in Orthographic projection
+        var wantedScreenLength = 50
 
         var pos1World = gizmo.position
-        var pos1Screen = camera1.worldToViewport(pos1World)
-        if (pos1Screen.x === -1)
-            return
+        var pos1Screen = demonview.worldToView(pos1World)
 
         // Note: vec3 should really be copy by value, not pointer?
         // Centeralize positions so that we don't change scale when
         // the camera rotates without any change of position
-        var pos2Screen = Qt.vector3d(0.6, 0, pos1Screen.z)
-        pos1Screen.x = 0.4
+        var center = demonview.width / 2
+        var pos2Screen = Qt.vector3d(center - wantedScreenLength / 2, 0, pos1Screen.z)
+        pos1Screen.x = center + wantedScreenLength / 2
         pos1Screen.y = 0
 
-        var pos1BackWorld = camera1.viewportToWorld(pos1Screen)
-        var pos2BackWorld = camera1.viewportToWorld(pos2Screen)
+        var pos1BackWorld = demonview.viewToWorld(pos1Screen)
+        var pos2BackWorld = demonview.viewToWorld(pos2Screen)
         var worldDist = distVec3(pos1BackWorld, pos2BackWorld)
 
-        var scale = worldDist / wantedScreenLength
+        var scale = worldDist / unscaledScreenLength
         gizmo.scale = Qt.vector3d(scale, scale, scale)
     }
 

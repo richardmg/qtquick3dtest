@@ -3,7 +3,7 @@ import QtDemon 1.0
 
 DemonModel {
     id: arrow
-    scale: Qt.vector3d(10, 10, 10)
+    //scale: Qt.vector3d(10, 10, 10)
     rotationOrder: DemonNode.XYZr
     orientation: DemonNode.RightHanded
     source: "meshes/Arrow.mesh"
