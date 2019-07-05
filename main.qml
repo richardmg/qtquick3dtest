@@ -59,7 +59,7 @@ Window {
         Gizmo {
             id: gizmo
             view: demonview
-            target: ambient
+//            target: ambient
         }
 //        Arrow {
 //            id: gizmo
