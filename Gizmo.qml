@@ -4,9 +4,9 @@ import QtDemon 1.0
 DemonNode {
     id: root
     property DemonNode target: root
-    property DemonView3D view: root.view
-    property real unscaledScreenLength: 1 // in Orthographic projection
-    property real wantedScreenLength: unscaledScreenLength
+    property DemonView3D view: undefined; // a node can be drawn by several views. But a gizmo can only belong to one view...
+    property real unscaledScreenLength: 10 // in Orthographic projection
+    property real wantedScreenLength: 100
 
 //    x: target.globalPosition.x
 //    y: target.globalPosition.y
@@ -14,6 +14,13 @@ DemonNode {
 //    rotation: target.rotation // should be target.globalRotation
 //    Component.onCompleted: parent = target
 //    onTargetChanged: parent = target
+
+    /*
+      I need a way to specify that a node should only be visible in
+      some cameras, but not in others...
+      ...Or have a hook so that I can change the node based on the
+      view that is about to render
+      */
 
     Connections {
         target: view.camera

@@ -59,8 +59,7 @@ Window {
         Gizmo {
             id: gizmo
             view: demonview
-            unscaledScreenLength: 10
-            wantedScreenLength: 100
+            target: ambient
         }
 //        Arrow {
 //            id: gizmo
