@@ -6,6 +6,7 @@ DemonNode {
     property DemonView3D view: undefined; // a node can be drawn by several views. But a gizmo can only belong to one view...
     property real unscaledScreenLength: 10 // in Orthographic projection
     property real wantedScreenLength: 70
+    property real maxScale: 15
     property bool isLight: true
 
 //    x: target.globalPosition.x
@@ -64,6 +65,9 @@ DemonNode {
 
         var distanceBetweenPositions = distVec3(pos1World, pos2World)
         var s = distanceBetweenPositions / unscaledScreenLength
+        if (s > maxScale)
+            s = maxScale
+        print(s)
         scale.x = s
         scale.y = s
         scale.z = s
