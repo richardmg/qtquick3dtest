@@ -5,7 +5,11 @@ DemonLight {
     id: light
     Gizmo {
         id: gizmo
-        view: demonview
+        scale: Qt.vector3d(5, 5, 5)
+        //            arrowX.visible: false
+        //            arrowY.visible: false
+        //            arrowZ.color: "yellow"
+//        FixedScreenSizeScript.enabled: true
     }
 }
 

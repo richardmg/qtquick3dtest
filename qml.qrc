@@ -10,5 +10,6 @@
         <file>meshes/Arrow.mesh</file>
         <file>Arrow.qml</file>
         <file>Gizmo.qml</file>
+        <file>FixedScreenSizeNode.qml</file>
     </qresource>
 </RCC>

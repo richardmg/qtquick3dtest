@@ -32,9 +32,9 @@ Window {
             rotation: Qt.vector3d(15, 0, 0)
         }
 
-        Sun {
-            secondsPerOrbit: 10
-        }
+//        Sun {
+//            secondsPerOrbit: 10
+//        }
 
         ConeLight {
             id: ambient
@@ -102,7 +102,7 @@ Window {
             y: 0
             width: parent.width
             height: parent.height
-            speed: 0.1
+            speed: 1
         }
 
 //        PointHandler {
