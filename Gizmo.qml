@@ -1,12 +1,10 @@
 import QtQuick 2.0
 import QtDemon 1.0
 
-FixedScreenSizeNode {
+DemonNode {
     property alias arrowX: arrowX
     property alias arrowY: arrowY
     property alias arrowZ: arrowZ
-
-    view: demonview
 
     Arrow {
         id: arrowX
