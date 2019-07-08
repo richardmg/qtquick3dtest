@@ -7,7 +7,11 @@ DemonNode {
     property real unscaledScreenLength: 10 // in Orthographic projection
     property real wantedScreenLength: 70
     property real maxScale: 15
-    property bool isLight: true
+
+    property real maxScreenLength: 10
+    property real minScreenLength: maxScreenLength // lock
+
+    property bool isLight: true // type
 
 //    x: target.globalPosition.x
 //    y: target.globalPosition.y
