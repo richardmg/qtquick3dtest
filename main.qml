@@ -1,7 +1,8 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
-import QtDemon 1.0
-import QtDemonHelpers 1.0
+import QtQuick3D 1.0
+import QtQuick3D.Helpers 1.0
+import QtQuick3D.Scripts 1.0
 
 Window {
     id: window
@@ -21,15 +22,15 @@ Window {
         onTriggered: time++
     }
 
-    DemonNode {
+    Node {
         id: scene
 
-        DemonCamera {
+        Camera {
             id: camera1
             z: -600
-//            projectionMode: DemonCamera.Orthographic
+//            projectionMode: Quick3DCamera.Orthographic
             y: 200
-            rotation: Qt.vector3d(15, 0, 0)
+//            rotation: Qt.vector3d(15, 0, 0)
         }
 
 //        Sun {
@@ -47,6 +48,8 @@ Window {
 
         Lowpolylandscape {
             id: landscape
+//            ScaleToLookFixed.camera: camera1
+//            ScaleToLookFixed.scale: Qt.vector3d(0.1, 0.1, 0.1)
         }
 
 //        AxisHelper {
@@ -56,37 +59,43 @@ Window {
 //            enableXYGrid: true
 //        }
 
+        Gizmo {
+            StayInFrontOfCamera.camera: camera1
+            StayInFrontOfCamera.viewportPosition: Qt.vector3d(0.05, 0.2, 20)
+            scale: Qt.vector3d(0.2, 0.2, 0.2)
+        }
+
     }
 
     Component {
         id: ray
-        DemonModel {
+        Model {
             source: "meshes/Arrow.mesh"
             rotation: Qt.vector3d(90, 0, 0)
-            materials: DemonDefaultMaterial {
+            materials: DefaultMaterial {
                 diffuseColor: "red"
-                lighting: DemonDefaultMaterial.NoLighting
+                lighting: DefaultMaterial.NoLighting
             }
         }
     }
 
     Sky {
         anchors.fill: parent
-        DemonView3D {
+        View3D {
             id: demonview
             anchors.fill: parent
             scene: scene
             camera: camera1
         }
 
-//        DemonView3D {
+//        Quick3DView3D {
 //            id: overlay
 //            anchors.fill: parent
-//            scene: DemonNode {
-//                DemonCamera {
+//            scene: Node {
+//                Quick3DCamera {
 //                    position: camera1.position
 //                    rotation: camera1.rotation
-////                    projectionMode: DemonCamera.Orthographic
+////                    projectionMode: Quick3DCamera.Orthographic
 //                }
 
 ////                Gizmo {

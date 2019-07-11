@@ -1,7 +1,7 @@
 import QtQuick 2.0
-import QtDemon 1.0
+import QtQuick3D 1.0
 
-DemonNode {
+Node {
     property int secondsPerOrbit: 100
     property real heightAboveGround: 200
 
@@ -13,7 +13,7 @@ DemonNode {
         return 360 * -fraction
     }
 
-    DemonNode {
+    Node {
         id: sunAndMoon
         property real earthRotation: 0
         rotation: Qt.vector3d(0, 0, earthRotation)

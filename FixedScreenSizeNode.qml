@@ -1,9 +1,9 @@
 import QtQuick 2.0
-import QtDemon 1.0
+import QtQuick3D 1.0
 
-DemonNode {
+Node {
     id: root
-    property DemonCamera camera: undefined; // a node can be drawn by several cameras. But a gizmo can only belong/scale to one camera...
+    property Quick3DCamera camera: undefined; // a node can be drawn by several cameras. But a gizmo can only belong/scale to one camera...
     property var baseScale: undefined
 
     /*

@@ -1,18 +1,18 @@
 import QtQuick 2.0
-import QtDemon 1.0
+import QtQuick3D 1.0
 
-DemonModel {
+Model {
     id: arrow
-    rotationOrder: DemonNode.XYZr
-    orientation: DemonNode.RightHanded
+    rotationOrder: Node.XYZr
+    orientation: Node.RightHanded
     source: "meshes/Arrow.mesh"
 
     property alias color: material.emissiveColor
 
-    materials: DemonDefaultMaterial {
+    materials: DefaultMaterial {
         id: material
         emissiveColor: Qt.rgba(1.0, 0.0, 0.0, 1.0)
-        lighting: DemonDefaultMaterial.NoLighting
+        lighting: DefaultMaterial.NoLighting
     }
 }
 
