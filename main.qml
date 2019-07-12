@@ -59,12 +59,13 @@ Window {
 //            enableXYGrid: true
 //        }
 
-        Gizmo {
-            StayInFrontOfCamera.camera: camera1
-            StayInFrontOfCamera.viewportPosition: Qt.vector3d(0.05, 0.2, 20)
-            scale: Qt.vector3d(0.2, 0.2, 0.2)
-        }
-
+//        Gizmo {
+//            parent: camera1
+//            z: 100
+////            StayInFrontOfCamera.camera: camera1
+////            StayInFrontOfCamera.viewportPosition: Qt.vector3d(0.05, 0.2, 20)
+//            scale: Qt.vector3d(0.2, 0.2, 0.2)
+//        }
     }
 
     Component {
@@ -88,21 +89,24 @@ Window {
             camera: camera1
         }
 
-//        Quick3DView3D {
-//            id: overlay
-//            anchors.fill: parent
-//            scene: Node {
-//                Quick3DCamera {
-//                    position: camera1.position
-//                    rotation: camera1.rotation
-////                    projectionMode: Quick3DCamera.Orthographic
-//                }
-
-////                Gizmo {
-////                    target: ambient
-////                }
-//            }
-//        }
+        View3D {
+            id: overlay
+            anchors.fill: parent
+            scene: Node {
+                Camera {
+                    projectionMode: Camera.Orthographic
+                    Gizmo {
+                        id: gizmo2
+                        x: -550
+                        y: 350
+                        z: 500
+                        // This implementation assumes that the camera is a child of root
+                        rotation: Qt.vector3d(-camera1.rotation.x, -camera1.rotation.y, -camera1.rotation.z)
+                        scale: Qt.vector3d(5, 5, 5)
+                    }
+                }
+            }
+        }
     }
 
         WasdController {
