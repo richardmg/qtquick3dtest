@@ -10,8 +10,8 @@ Light {
         //            arrowX.visible: false
         //            arrowY.visible: false
         //            arrowZ.color: "yellow"
-//        AutoScaleToLookFixedScript.enabled: true
-//        AutoScaleToLookFixedScript.camera: camera1
+        ScaleToLookFixed.enabled: true
+        ScaleToLookFixed.camera: camera1
     }
 }
 
