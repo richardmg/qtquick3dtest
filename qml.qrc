@@ -11,5 +11,7 @@
         <file>Arrow.qml</file>
         <file>Gizmo.qml</file>
         <file>FixedScreenSizeNode.qml</file>
+        <file>WorldScene.qml</file>
+        <file>OverlayScene.qml</file>
     </qresource>
 </RCC>

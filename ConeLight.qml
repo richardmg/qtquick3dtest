@@ -4,14 +4,14 @@ import QtQuick3D.Scripts 1.0
 
 Light {
     id: light
-    Gizmo {
-        id: gizmo
-        objectName: "MyGizmo"
-        //            arrowX.visible: false
-        //            arrowY.visible: false
-        //            arrowZ.color: "yellow"
-        ScaleToLookFixed.enabled: true
-        ScaleToLookFixed.camera: camera1
-    }
+//    Gizmo {
+//        id: gizmo
+//        objectName: "MyGizmo"
+//        //            arrowX.visible: false
+//        //            arrowY.visible: false
+//        //            arrowZ.color: "yellow"
+//        ScaleToLookFixed.enabled: true
+//        ScaleToLookFixed.camera: camera1
+//    }
 }
 
