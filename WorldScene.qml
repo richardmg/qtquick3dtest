@@ -30,5 +30,27 @@ Node {
             ScaleToLookFixed.camera: camera1
             ScaleToLookFixed.scale: Qt.vector3d(0.5, 0.5, 0.5)
         }
+
+        Model {
+            id: someChildNode1
+            source: "#Cone"
+            y: 100
+            materials: DefaultMaterial {
+                diffuseColor: "red"
+                lighting: DefaultMaterial.NoLighting
+            }
+            Model {
+                id: someChildNode2
+                source: "#Cone"
+                x: 150
+                y: 100
+                rotation: Qt.vector3d(0, 0, 90)
+                materials: DefaultMaterial {
+                    diffuseColor: "green"
+                    lighting: DefaultMaterial.NoLighting
+                }
+            }
+        }
+
     }
 }
