@@ -49,8 +49,10 @@ Node {
                     diffuseColor: "green"
                     lighting: DefaultMaterial.NoLighting
                 }
+                Component.onCompleted: targetNode = someChildNode2
             }
         }
 
     }
+    Component.onCompleted: targetNode = landscape
 }

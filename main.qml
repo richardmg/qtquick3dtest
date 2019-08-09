@@ -10,6 +10,8 @@ Window {
     height: 480
     visible: true
 
+    property Node targetNode
+
     Sky {
         anchors.fill: parent
 
@@ -29,7 +31,7 @@ Window {
                 mainView: worldView
 
                 onUpdateOverlay: {
-                    gizmo.position = overlayPos(worldScene.landscape)
+                    gizmo.position = overlayPos(targetNode)
                     gizmo.rotation = worldScene.landscape.position
                 }
 
