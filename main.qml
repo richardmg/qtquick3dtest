@@ -21,11 +21,11 @@ Window {
             camera: worldScene.camera
             scene: WorldScene {
                 id: worldScene
-                Gizmo {
-                    id: worldGizmo
-                    objectName: "worldGizmo"
-                    scale: Qt.vector3d(5, 5, 5)
-                }
+//                Gizmo {
+//                    id: worldGizmo
+//                    objectName: "worldGizmo"
+//                    scale: Qt.vector3d(5, 5, 5)
+//                }
             }
         }
 
@@ -38,9 +38,7 @@ Window {
                 mainView: worldView
 
                 onUpdateOverlay: {
-                    worldGizmo.position = targetNode.globalPosition
-//                    overlayGizmo.position = overlayPos(targetNode)
-                    print(targetNode.globalPosition)
+                    overlayGizmo.position = overlayPos(targetNode)
                 }
 
                 Gizmo {

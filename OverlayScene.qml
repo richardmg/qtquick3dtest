@@ -11,8 +11,9 @@ Node {
 
     function overlayPos(node)
     {
-        var worldCamPosInView = mainView.camera.worldToViewport(node.position)
-        return overlayCamera.viewportToWorld(worldCamPosInView)
+        var worldCamPosInView = mainView.camera.worldToViewport(node.globalPosition)
+        var worldNodeOverlayPos = overlayCamera.viewportToWorld(worldCamPosInView)
+        return worldNodeOverlayPos
     }
 
     Connections {
