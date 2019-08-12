@@ -5,6 +5,7 @@ import QtQuick3D.Scripts 1.0
 
 Node {
     property View3D mainView: undefined
+    objectName: "overlayRootNode"
 
     signal updateOverlay
 
@@ -16,14 +17,20 @@ Node {
 
     Connections {
         target: mainView.camera
-        onRotationChanged: updateOverlay()
-        onPositionChanged: updateOverlay()
-        // onTransformChanged: updateOverlay()
+//        onRotationChanged: updateOverlay()
+//        onPositionChanged: updateOverlay()
+        onGlobalTransformChanged: updateOverlay()
     }
 
     Camera {
         id: overlayCamera
         projectionMode: Camera.Orthographic
+        objectName: "overlayCamera"
+    }
+
+    Timer {
+        running: true
+        onTriggered: updateOverlay()
     }
 }
 

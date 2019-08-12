@@ -19,7 +19,14 @@ Window {
             id: worldView
             anchors.fill: parent
             camera: worldScene.camera
-            scene: WorldScene { id: worldScene }
+            scene: WorldScene {
+                id: worldScene
+                Gizmo {
+                    id: worldGizmo
+                    objectName: "worldGizmo"
+                    scale: Qt.vector3d(5, 5, 5)
+                }
+            }
         }
 
         View3D {
@@ -31,12 +38,13 @@ Window {
                 mainView: worldView
 
                 onUpdateOverlay: {
-                    gizmo.position = overlayPos(targetNode)
-                    gizmo.rotation = worldScene.landscape.position
+                    worldGizmo.position = targetNode.globalPosition
+//                    overlayGizmo.position = overlayPos(targetNode)
+                    print(targetNode.globalPosition)
                 }
 
                 Gizmo {
-                    id: gizmo
+                    id: overlayGizmo
                     scale: Qt.vector3d(5, 5, 5)
                 }
             }
