@@ -21,11 +21,13 @@ Window {
             camera: worldScene.camera
             scene: WorldScene {
                 id: worldScene
-//                Gizmo {
-//                    id: worldGizmo
-//                    objectName: "worldGizmo"
-//                    scale: Qt.vector3d(5, 5, 5)
-//                }
+                Gizmo {
+                    id: worldGizmo
+                    objectName: "worldGizmo"
+                    scale: Qt.vector3d(0.2, 0.2, 0.2)
+                    StayInFrontOfCamera.camera: worldScene.camera
+                    StayInFrontOfCamera.viewportPosition: Qt.vector3d(0.05, 0.08, 50)
+                }
             }
         }
 

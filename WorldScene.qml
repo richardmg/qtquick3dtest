@@ -8,6 +8,7 @@ Node {
     property alias camera: camera1
     property alias landscape: landscape
     objectName: "worldRootNode"
+    orientation: Node.RightHanded
 
     Camera {
         id: camera1
@@ -27,6 +28,8 @@ Node {
     Lowpolylandscape {
         id: landscape
         objectName: "landscape"
+        orientation: Node.RightHanded
+
 //        Gizmo {
 //            id: gizmo
 //            visible: false
@@ -40,9 +43,10 @@ Node {
             source: "#Cone"
             x: 100
             y: 100
-            z: 100
-            scale: Qt.vector3d(0.3, 0.3, 0.3)
-            rotation: Qt.vector3d(0, 0, 45)
+            z: 200
+            scale: Qt.vector3d(0.5, 0.5, 0.5)
+            rotation: Qt.vector3d(0, 0, 30)
+            orientation: Node.RightHanded
             materials: DefaultMaterial {
                 diffuseColor: "red"
                 lighting: DefaultMaterial.NoLighting
@@ -51,10 +55,12 @@ Node {
                 id: someChildNode2
                 objectName: "child2"
                 source: "#Cone"
-                x: 150
-                y: 100
+                x: 250
+                y: 200
                 z: 100
-                rotation: Qt.vector3d(0, 0, 90)
+//                rotation: Qt.vector3d(0, 0, 90)
+//                scale: Qt.vector3d(1, 2, 1)
+                orientation: Node.RightHanded
                 materials: DefaultMaterial {
                     diffuseColor: "green"
                     lighting: DefaultMaterial.NoLighting
