@@ -60,7 +60,7 @@ Node {
                 z: 100
 //                rotation: Qt.vector3d(0, 0, 90)
 //                scale: Qt.vector3d(1, 2, 1)
-                orientation: Node.RightHanded
+                orientation: Node.LeftHanded
                 materials: DefaultMaterial {
                     diffuseColor: "green"
                     lighting: DefaultMaterial.NoLighting

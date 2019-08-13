@@ -24,9 +24,9 @@ Window {
                 Gizmo {
                     id: worldGizmo
                     objectName: "worldGizmo"
-                    scale: Qt.vector3d(0.2, 0.2, 0.2)
-                    StayInFrontOfCamera.camera: worldScene.camera
-                    StayInFrontOfCamera.viewportPosition: Qt.vector3d(0.05, 0.08, 50)
+                    scale: Qt.vector3d(2, 2, 2)
+//                    StayInFrontOfCamera.camera: worldScene.camera
+//                    StayInFrontOfCamera.viewportPosition: Qt.vector3d(0.05, 0.08, 50)
                 }
             }
         }
@@ -40,7 +40,9 @@ Window {
                 mainView: worldView
 
                 onUpdateOverlay: {
-                    overlayGizmo.position = overlayPos(targetNode)
+                    print(targetNode.globalPosition)
+                    worldGizmo.position = targetNode.globalPosition
+//                    overlayGizmo.position = overlayPos(targetNode)
                 }
 
                 Gizmo {
