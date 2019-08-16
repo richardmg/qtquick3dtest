@@ -40,8 +40,11 @@ Window {
                 mainView: worldView
 
                 onUpdateOverlay: {
-                    worldGizmo.position = targetNode.globalPosition
-//                    overlayGizmo.position = overlayPos(targetNode)
+//                    worldGizmo.position = targetNode.globalPosition
+//                    worldGizmo.rotation = targetNode.globalRotation
+
+                    overlayGizmo.position = overlayPos(targetNode)
+                    overlayGizmo.rotation = targetNode.globalRotation
                 }
 
                 Gizmo {

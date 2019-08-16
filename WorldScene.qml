@@ -37,7 +37,7 @@ Node {
             y: 100
             z: 0
             scale: Qt.vector3d(0.5, 0.5, 0.5)
-            rotation: Qt.vector3d(0, 0, 30)
+//            rotation: Qt.vector3d(0, 0, 30)
 //            orientation: Node.RightHanded
             materials: DefaultMaterial {
                 diffuseColor: "red"
@@ -56,9 +56,15 @@ Node {
                 x: 150
                 y: 150
                 z: 100
+                scale: Qt.vector3d(0.5, 0.5, 0.5)
                 materials: DefaultMaterial {
                     diffuseColor: "green"
                     lighting: DefaultMaterial.NoLighting
+                }
+
+                SequentialAnimation on rotation {
+                    loops: Animation.Infinite
+                    PropertyAnimation { duration: 5000; to: Qt.vector3d(360, 0, 0); from: Qt.vector3d(0, 0, 0) }
                 }
             }
         }
