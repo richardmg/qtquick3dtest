@@ -40,7 +40,6 @@ Window {
                 mainView: worldView
 
                 onUpdateOverlay: {
-                    print(targetNode.globalPosition)
                     worldGizmo.position = targetNode.globalPosition
 //                    overlayGizmo.position = overlayPos(targetNode)
                 }

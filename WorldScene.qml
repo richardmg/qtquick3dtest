@@ -29,23 +29,6 @@ Node {
         objectName: "landscape"
         orientation: Node.LeftHanded
 
-//        Gizmo {
-//            id: gizmo
-//            visible: false
-//            ScaleToLookFixed.camera: camera1
-//            ScaleToLookFixed.scale: Qt.vector3d(0.5, 0.5, 0.5)
-//        }
-
-        Model {
-            source: "#Cone"
-            y: 100
-            scale: Qt.vector3d(0.5, 0.5, 0.5)
-            materials: DefaultMaterial {
-                diffuseColor: "gray"
-                lighting: DefaultMaterial.NoLighting
-            }
-        }
-
         Model {
             id: someChildNode1
             objectName: "cone1"
@@ -56,22 +39,23 @@ Node {
             scale: Qt.vector3d(0.5, 0.5, 0.5)
             rotation: Qt.vector3d(0, 0, 30)
 //            orientation: Node.RightHanded
-            pivot: Qt.vector3d(0, 0, 50)
             materials: DefaultMaterial {
                 diffuseColor: "red"
                 lighting: DefaultMaterial.NoLighting
             }
+
+            SequentialAnimation on rotation {
+                loops: Animation.Infinite
+                PropertyAnimation { duration: 5000; to: Qt.vector3d(0, 360, 0); from: Qt.vector3d(0, 0, 0) }
+            }
+
             Model {
                 id: someChildNode2
                 objectName: "cone2"
                 source: "#Cone"
-                x: 250
-                y: 200
+                x: 150
+                y: 150
                 z: 100
-//                rotation: Qt.vector3d(0, 0, 90)
-//                scale: Qt.vector3d(1, 2, 1)
-                pivot: Qt.vector3d(0, 0, 50)
-//                orientation: Node.LeftHanded
                 materials: DefaultMaterial {
                     diffuseColor: "green"
                     lighting: DefaultMaterial.NoLighting
