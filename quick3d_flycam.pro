@@ -1,4 +1,4 @@
-QT += quick quick3d
+QT += quick quick3d-private
 
 SOURCES += \
     main.cpp
