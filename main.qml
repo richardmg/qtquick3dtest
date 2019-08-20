@@ -34,16 +34,29 @@ Window {
         View3D {
             id: overlay
             anchors.fill: parent
-//            visible: false
-            scene: OverlayScene {
+            scene: Node {
                 id: overlayScene
-                mainView: worldView
 
-                onUpdateOverlay: {
-//                    worldGizmo.position = targetNode.globalPosition
-//                    worldGizmo.rotation = targetNode.globalRotation
+                Connections {
+                    target: worldView.camera
+                    onGlobalTransformChanged: overlayScene.updateOverlay()
+                }
 
-                    overlayGizmo.position = overlayPos(targetNode)
+                Connections {
+                    target: targetNode
+                    onGlobalTransformChanged: overlayScene.updateOverlay()
+                }
+
+                Camera {
+                    id: overlayCamera
+                    projectionMode: Camera.Orthographic
+                    objectName: "overlayCamera"
+                }
+
+                function updateOverlay()
+                {
+                    var viewPos = worldView.camera.worldToViewport(targetNode.globalPosition)
+                    overlayGizmo.position = overlayCamera.viewportToWorld(viewPos)
                     overlayGizmo.rotation = targetNode.globalRotation
                 }
 
