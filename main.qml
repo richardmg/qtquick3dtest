@@ -19,14 +19,21 @@ Window {
             id: worldView
             anchors.fill: parent
             camera: worldScene.camera
-            visible: false
             scene: WorldScene {
                 id: worldScene
+                Gizmo {
+                    id: worldGizmo
+                    scale: Qt.vector3d(0.08, 0.08, 0.08)
+                    Connections {
+                        target: worldView.camera
+                        onGlobalTransformChanged: worldGizmo.position = worldView.viewToWorld(Qt.vector3d(45, 45, 10))
+                    }
+                }
             }
         }
 
         View3D {
-            id: overlay
+            id: overlayView
             anchors.fill: parent
             camera: overlayCamera
             scene: Node {
@@ -39,19 +46,48 @@ Window {
                 }
 
                 Gizmo {
-                    id: sceneOrientation
+                    id: gadget
                     scale: Qt.vector3d(5, 5, 5)
-                    position: overlay.viewToScene.transform(Qt.vector3d(100, 100, 100))
-                    rotation: worldView.camera.globalRotation
-                }
 
-                Gizmo {
-                    id: trackingOtherNode
-                    scale: Qt.vector3d(5, 5, 5)
-                    position: overlayCamera.viewportToScene.transform(worldView.camera.sceneToViewport.transform(targetNode.globalPosition))
-                    rotation: targetNode.globalRotation
+                    Connections {
+                        target: targetNode
+                        onGlobalTransformChanged: gadget.updateGadget()
+                    }
+
+                    Connections {
+                        target: worldView.camera
+                        onGlobalTransformChanged: gadget.updateGadget()
+                    }
+
+                    function updateGadget()
+                    {
+                        // Consider putting all this in a OverlayIconScript
+                        var viewportPos = worldView.camera.worldToViewport(targetNode.globalPosition)
+                        position = overlayCamera.viewportToWorld(viewportPos)
+                        rotation = targetNode.globalRotation
+                    }
                 }
             }
+        }
+    }
+
+    Rectangle {
+        id: hoverIcon
+        color: "magenta"
+        width: 50
+        height: 50
+
+        Connections {
+            target: targetNode
+            onGlobalPositionChanged: hoverIcon.updateGadget()
+        }
+
+        function updateGadget()
+        {
+            // Consider putting all this in a OverlayIconScript
+            var viewportPos = worldView.worldToView(targetNode.globalPosition)
+            x = viewportPos.x
+            y = viewportPos.y - 100
         }
     }
 
