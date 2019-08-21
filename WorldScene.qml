@@ -58,7 +58,7 @@ Node {
                 z: 100
                 scale: Qt.vector3d(0.5, 0.5, 0.5)
                 materials: DefaultMaterial {
-                    diffuseColor: "green"
+                    diffuseColor: "gray"
                     lighting: DefaultMaterial.NoLighting
                 }
 

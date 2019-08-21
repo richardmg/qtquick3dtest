@@ -26,7 +26,7 @@ Window {
                     scale: Qt.vector3d(0.08, 0.08, 0.08)
                     Connections {
                         target: worldView.camera
-                        onGlobalTransformChanged: worldGizmo.position = worldView.viewToWorld(Qt.vector3d(45, 45, 10))
+                        onGlobalTransformChanged: worldGizmo.position = worldView.mapTo3DScene(Qt.vector3d(45, 45, 10))
                     }
                 }
             }
@@ -62,8 +62,8 @@ Window {
                     function updateGadget()
                     {
                         // Consider putting all this in a OverlayIconScript
-                        var viewportPos = worldView.camera.worldToViewport(targetNode.globalPosition)
-                        position = overlayCamera.viewportToWorld(viewportPos)
+                        var viewportPos = worldView.camera.mapFromScene(targetNode.globalPosition)
+                        position = overlayCamera.mapToScene(viewportPos)
                         rotation = targetNode.globalRotation
                     }
                 }
@@ -85,7 +85,7 @@ Window {
         function updateGadget()
         {
             // Consider putting all this in a OverlayIconScript
-            var viewportPos = worldView.worldToView(targetNode.globalPosition)
+            var viewportPos = worldView.mapFrom3DScene(targetNode.globalPosition)
             x = viewportPos.x
             y = viewportPos.y - 100
         }
