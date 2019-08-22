@@ -13,5 +13,6 @@
         <file>FixedScreenSizeNode.qml</file>
         <file>WorldScene.qml</file>
         <file>OverlayScene.qml</file>
+        <file>CameraGizmo.qml</file>
     </qresource>
 </RCC>

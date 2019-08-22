@@ -21,15 +21,13 @@ Window {
             camera: worldScene.camera
             scene: WorldScene {
                 id: worldScene
-                Gizmo {
-                    id: worldGizmo
-                    scale: Qt.vector3d(0.08, 0.08, 0.08)
-                    Connections {
-                        target: worldView.camera
-                        onGlobalTransformChanged: worldGizmo.position = worldView.mapTo3DScene(Qt.vector3d(45, 45, 10))
-                    }
-                }
             }
+        }
+
+        CameraGizmo {
+            width: 70
+            height: 70
+            targetCamera: worldView.camera
         }
 
         View3D {
@@ -41,7 +39,7 @@ Window {
 
                 Camera {
                     id: overlayCamera
-                    projectionMode: Camera.Orthographic
+//                    projectionMode: Camera.Orthographic
                     objectName: "overlayCamera"
                 }
 
@@ -79,19 +77,24 @@ Window {
 
         Connections {
             target: targetNode
-            onGlobalPositionChanged: hoverIcon.updateGadget()
-        }
-
-        function updateGadget()
-        {
-            // Consider putting all this in a OverlayIconScript
-            var viewportPos = worldView.mapFrom3DScene(targetNode.globalPosition)
-            x = viewportPos.x
-            y = viewportPos.y - 100
+            onGlobalPositionChanged: {
+                // Consider putting all this in a BehaviourScript
+                var viewPos = worldView.mapFrom3DScene(targetNode.globalPosition)
+                hoverIcon.x = viewPos.x
+                hoverIcon.y = viewPos.y - 100
+            }
         }
     }
 
     WasdController {
         controlledObject: worldView.camera
     }
+
+    /*
+      Noen tanker:
+      Hvis man lager små 3d views som overlay, så vil de få et annet perspektiv enn de
+      nodene de er overlay for. Og det vil kanskje se litt rart ut? I så fall, bør de
+      da ha ortho projection? Eller er det derfor bedre å ha ett stort overlay view?
+      Så kan man uansett velge projeksjon.
+    */
 }
