@@ -39,12 +39,16 @@ Window {
                 }
 
                 Gizmo3D {
+                    // Note: if you want orthograhic projections, you might as well
+                    // use Overlay2D, since you achive the same. And in both cases, you
+                    // cannot use the same overlay with two different cameras/views.
                     targetNode: window.targetNode
                     targetView: worldView
                     Arrows {
                         id: overlayGizmo3D
                         scale: Qt.vector3d(5, 5, 5)
                     }
+                    trackRotation: false
                 }
 
             }
