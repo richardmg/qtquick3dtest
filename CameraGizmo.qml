@@ -20,7 +20,7 @@ View3D {
         Camera {
             fieldOfView: 23
         }
-        Gizmo {
+        GizmoArrows {
             z: 100
             rotation: {
                 var p = targetCamera.globalRotation

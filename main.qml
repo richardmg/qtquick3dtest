@@ -24,12 +24,6 @@ Window {
             }
         }
 
-        CameraGizmo {
-            width: 70
-            height: 70
-            targetCamera: worldView.camera
-        }
-
         View3D {
             id: overlayView
             anchors.fill: parent
@@ -43,21 +37,21 @@ Window {
                     objectName: "overlayCamera"
                 }
 
-                Gizmo {
-                    id: gadget
+                GizmoArrows {
+                    id: overlayGizmo3D
                     scale: Qt.vector3d(5, 5, 5)
 
                     Connections {
                         target: targetNode
-                        onGlobalTransformChanged: gadget.updateGadget()
+                        onGlobalTransformChanged: overlayGizmo3D.updateGizmo()
                     }
 
                     Connections {
                         target: worldView.camera
-                        onGlobalTransformChanged: gadget.updateGadget()
+                        onGlobalTransformChanged: overlayGizmo3D.updateGizmo()
                     }
 
-                    function updateGadget()
+                    function updateGizmo()
                     {
                         // Consider putting all this in a OverlayIconScript
                         var viewportPos = worldView.camera.mapFromScene(targetNode.globalPosition)
@@ -69,8 +63,14 @@ Window {
         }
     }
 
+    CameraGizmo {
+        width: 70
+        height: 70
+        targetCamera: worldView.camera
+    }
+
     Rectangle {
-        id: hoverIcon
+        id: overlayGizmo2D
         color: "magenta"
         width: 50
         height: 50
@@ -80,8 +80,8 @@ Window {
             onGlobalPositionChanged: {
                 // Consider putting all this in a BehaviourScript
                 var viewPos = worldView.mapFrom3DScene(targetNode.globalPosition)
-                hoverIcon.x = viewPos.x
-                hoverIcon.y = viewPos.y - 100
+                overlayGizmo2D.x = viewPos.x
+                overlayGizmo2D.y = viewPos.y - 100
             }
         }
     }
