@@ -14,7 +14,7 @@
         <file>WorldScene.qml</file>
         <file>OverlayScene.qml</file>
         <file>CameraGizmo.qml</file>
-        <file>Gizmo2D.qml</file>
-        <file>Gizmo3D.qml</file>
+        <file>Overlay2D.qml</file>
+        <file>Overlay3D.qml</file>
     </qresource>
 </RCC>

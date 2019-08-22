@@ -38,10 +38,12 @@ Window {
                     rotation: worldView.camera.rotation
                 }
 
-                Gizmo3D {
+                Overlay3D {
                     // Note: if you want orthograhic projections, you might as well
                     // use Overlay2D, since you achive the same. And in both cases, you
                     // cannot use the same overlay with two different cameras/views.
+                    // The same is also true if you want perspective, and use auto
+                    // scaling or billboarding.
                     targetNode: window.targetNode
                     targetView: worldView
                     Arrows {
@@ -61,7 +63,7 @@ Window {
         targetCamera: worldView.camera
     }
 
-    Gizmo2D {
+    Overlay2D {
         id: overlayGizmo2D
         targetNode: window.targetNode
         targetView: worldView
