@@ -69,20 +69,16 @@ Window {
         targetCamera: worldView.camera
     }
 
-    Rectangle {
+    Gizmo2D {
         id: overlayGizmo2D
-        color: "magenta"
-        width: 50
-        height: 50
+        targetNode: window.targetNode
+        targetView: worldView
 
-        Connections {
-            target: targetNode
-            onGlobalPositionChanged: {
-                // Consider putting all this in a BehaviourScript
-                var viewPos = worldView.mapFrom3DScene(targetNode.globalPosition)
-                overlayGizmo2D.x = viewPos.x
-                overlayGizmo2D.y = viewPos.y - 100
-            }
+        Rectangle {
+            color: "magenta"
+            y: -100
+            width: 50
+            height: 50
         }
     }
 
