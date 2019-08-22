@@ -27,7 +27,6 @@ Window {
         View3D {
             id: overlayView
             anchors.fill: parent
-            camera: overlayCamera
             scene: Node {
                 id: overlayScene
 
@@ -35,30 +34,19 @@ Window {
                     id: overlayCamera
 //                    projectionMode: Camera.Orthographic
                     objectName: "overlayCamera"
+                    position: worldView.camera.position
+                    rotation: worldView.camera.rotation
                 }
 
-                GizmoArrows {
-                    id: overlayGizmo3D
-                    scale: Qt.vector3d(5, 5, 5)
-
-                    Connections {
-                        target: targetNode
-                        onGlobalTransformChanged: overlayGizmo3D.updateGizmo()
-                    }
-
-                    Connections {
-                        target: worldView.camera
-                        onGlobalTransformChanged: overlayGizmo3D.updateGizmo()
-                    }
-
-                    function updateGizmo()
-                    {
-                        // Consider putting all this in a OverlayIconScript
-                        var viewportPos = worldView.camera.mapFromScene(targetNode.globalPosition)
-                        position = overlayCamera.mapToScene(viewportPos)
-                        rotation = targetNode.globalRotation
+                Gizmo3D {
+                    targetNode: window.targetNode
+                    targetView: worldView
+                    Arrows {
+                        id: overlayGizmo3D
+                        scale: Qt.vector3d(5, 5, 5)
                     }
                 }
+
             }
         }
     }

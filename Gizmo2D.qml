@@ -6,6 +6,10 @@ Item {
     property Node targetNode
     property View3D targetView
 
+    // To make the gizmo appear to be a part of the 3D scene.
+    property real xOffsetInSceneUnits
+    property real yOffsetInSceneUnits
+
     Connections {
         target: targetNode
         onGlobalPositionChanged: {

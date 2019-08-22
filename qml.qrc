@@ -9,11 +9,12 @@
         <file>Sky.qml</file>
         <file>meshes/Arrow.mesh</file>
         <file>Arrow.qml</file>
-        <file>GizmoArrows.qml</file>
+        <file>Arrows.qml</file>
         <file>FixedScreenSizeNode.qml</file>
         <file>WorldScene.qml</file>
         <file>OverlayScene.qml</file>
         <file>CameraGizmo.qml</file>
         <file>Gizmo2D.qml</file>
+        <file>Gizmo3D.qml</file>
     </qresource>
 </RCC>
