@@ -4,13 +4,38 @@ import QtQuick3D 1.0
 import QtQuick3D.Helpers 1.0
 import QtQuick3D.Scripts 1.0
 
-Window {
+import QtQuick.Controls 2.5
+import QtQuick.Layouts 1.12
+
+ApplicationWindow {
     id: window
     width: 640
     height: 480
     visible: true
 
-    property Node targetNode
+    property Node targetNode: initalCone
+    property bool useGlobalGizmo: true
+    property bool usePerspective: true
+
+    header: ToolBar {
+        RowLayout {
+            anchors.fill: parent
+            ToolButton {
+                text: useGlobalGizmo ? qsTr("Global") : qsTr("Local")
+                onClicked: useGlobalGizmo = !useGlobalGizmo
+            }
+            ToolButton {
+                text: usePerspective ? qsTr("Perspective") : qsTr("Orthographic")
+                onClicked: usePerspective = !usePerspective
+            }
+            ToolButton {
+                text: qsTr("+Cone")
+            }
+            Item {
+                Layout.fillWidth: true
+            }
+        }
+    }
 
     Sky {
         anchors.fill: parent
@@ -18,24 +43,37 @@ Window {
         View3D {
             id: worldView
             anchors.fill: parent
-            camera: worldScene.camera
-            scene: WorldScene {
-                id: worldScene
+            camera: camera1
+            scene: Node {
+                id: scene
+                Camera {
+                    id: camera1
+                    z: -500
+                }
+
+                Model {
+                    id: initalCone
+                    source: "teapot.mesh"
+                    scale: Qt.vector3d(0.5, 0.5, 0.5)
+                    materials: DefaultMaterial {
+                        diffuseColor: "yellow"
+                    }
+                }
             }
         }
 
         View3D {
             id: overlayView
             anchors.fill: parent
+            camera: overlayCamera
             scene: Node {
                 id: overlayScene
 
                 Camera {
                     id: overlayCamera
-//                    projectionMode: Camera.Orthographic
-                    objectName: "overlayCamera"
-                    position: worldView.camera.position
-                    rotation: worldView.camera.rotation
+                    projectionMode: usePerspective ? Camera.Perspective : Camera.Orthographic
+                    position: camera1.position
+                    rotation: camera1.rotation
                 }
 
                 Overlay3D {
@@ -50,34 +88,36 @@ Window {
                         id: overlayGizmo3D
                         scale: Qt.vector3d(5, 5, 5)
                     }
-                    trackRotation: false
+                    trackPosition: false
                 }
 
             }
         }
-    }
 
-    CameraGizmo {
-        width: 70
-        height: 70
-        targetCamera: worldView.camera
-    }
-
-    Overlay2D {
-        id: overlayGizmo2D
-        targetNode: window.targetNode
-        targetView: worldView
-
-        Rectangle {
-            color: "magenta"
-            y: -100
-            width: 50
-            height: 50
+        CameraGizmo {
+            width: 70
+            height: 70
+            anchors.right: parent.right
+            targetCamera: worldView.camera
         }
-    }
 
-    WasdController {
-        controlledObject: worldView.camera
+        Overlay2D {
+            id: overlayGizmo2D
+            targetNode: window.targetNode
+            targetView: worldView
+
+            Rectangle {
+                color: "magenta"
+                y: -100
+                width: 50
+                height: 50
+            }
+        }
+
+        WasdController {
+            controlledObject: worldView.camera
+            acceptedButtons: Qt.RightButton
+        }
     }
 
     /*
