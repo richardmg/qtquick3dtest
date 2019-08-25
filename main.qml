@@ -55,6 +55,7 @@ ApplicationWindow {
                     id: initalCone
                     source: "teapot.mesh"
                     scale: Qt.vector3d(0.5, 0.5, 0.5)
+                    rotation: Qt.vector3d(45, 45, 45)
                     materials: DefaultMaterial {
                         diffuseColor: "yellow"
                     }
@@ -121,7 +122,7 @@ ApplicationWindow {
 
         TapHandler {
             onTapped: {
-                var gp = targetNode.mapToGlobal(Qt.vector3d(0, 0, 0))
+                var gp = targetNode.mapToGlobal(Qt.vector3d(45, 0, 0))
                 var viewPos = overlayView.mapFrom3DScene(gp)
                 print(eventPoint.position, " : ", viewPos)
             }
@@ -134,5 +135,24 @@ ApplicationWindow {
       nodene de er overlay for. Og det vil kanskje se litt rart ut? I så fall, bør de
       da ha ortho projection? Eller er det derfor bedre å ha ett stort overlay view?
       Så kan man uansett velge projeksjon.
+
+ Vector3 Node::convertWorldToLocalPosition( const Vector3 &worldPos )
+    {
+        if (mNeedParentUpdate)
+        {
+            _updateFromParent();
+        }
+        return mDerivedOrientation.Inverse() * (worldPos - mDerivedPosition) / mDerivedScale;
+    }
+    //-----------------------------------------------------------------------
+    Vector3 Node::convertLocalToWorldPosition( const Vector3 &localPos )
+    {
+        if (mNeedParentUpdate)
+        {
+            _updateFromParent();
+        }
+        return (mDerivedOrientation * localPos * mDerivedScale) + mDerivedPosition;
+    }
+
     */
 }
