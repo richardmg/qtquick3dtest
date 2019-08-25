@@ -116,7 +116,15 @@ ApplicationWindow {
 
         WasdController {
             controlledObject: worldView.camera
-            acceptedButtons: Qt.RightButton
+            //acceptedButtons: Qt.RightButton
+        }
+
+        TapHandler {
+            onTapped: {
+                var gp = targetNode.mapToGlobal(Qt.vector3d(0, 0, 0))
+                var viewPos = overlayView.mapFrom3DScene(gp)
+                print(eventPoint.position, " : ", viewPos)
+            }
         }
     }
 
