@@ -12,10 +12,18 @@ Item {
 
     Connections {
         target: targetNode
-        onGlobalPositionChanged: {
-            var viewPos = targetView.mapFrom3DScene(targetNode.globalPosition)
-            root.x = viewPos.x
-            root.y = viewPos.y
-        }
+        onGlobalTransformChanged: updateOverlay()
+    }
+
+    Connections {
+        target: targetView.camera
+        onGlobalTransformChanged: updateOverlay()
+    }
+
+    function updateOverlay()
+    {
+        var viewPos = targetView.mapFrom3DScene(targetNode.globalPosition)
+        root.x = viewPos.x
+        root.y = viewPos.y
     }
 }

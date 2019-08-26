@@ -13,9 +13,13 @@ ApplicationWindow {
     height: 480
     visible: true
 
-    property Node targetNode: initalCone
+    property Node targetNode: initalPot
     property bool useGlobalGizmo: true
     property bool usePerspective: true
+
+    property bool hoveringGizmoHeadX: false
+    property bool hoveringGizmoHeadY: false
+    property bool hoveringGizmoHeadZ: false
 
     header: ToolBar {
         RowLayout {
@@ -38,6 +42,7 @@ ApplicationWindow {
     }
 
     Sky {
+        id: sceneBg
         anchors.fill: parent
 
         View3D {
@@ -66,11 +71,11 @@ ApplicationWindow {
                 }
 
                 Model {
-                    id: initalCone
+                    id: initalPot
                     y: 200
                     source: "meshes/Teapot.mesh"
+//                    rotation: Qt.vector3d(0, 0, 45)
                     scale: Qt.vector3d(20, 20, 20)
-                    rotation: Qt.vector3d(45, 45, 45)
                     materials: DefaultMaterial {
                         diffuseColor: "salmon"
                     }
@@ -93,6 +98,7 @@ ApplicationWindow {
                 }
 
                 Overlay3D {
+                    id: targetGizmo
                     // Note: if you want orthograhic projections, you might as well
                     // use Overlay2D, since you achive the same. And in both cases, you
                     // cannot use the same overlay with two different cameras/views.
@@ -100,9 +106,26 @@ ApplicationWindow {
                     // scaling or billboarding.
                     targetNode: window.targetNode
                     targetView: worldView
-                    Arrows {
-                        id: overlayGizmo3D
-                        scale: Qt.vector3d(5, 5, 5)
+                    Node {
+                        scale: Qt.vector3d(7, 7, 7)
+
+                        Arrow {
+                            id: targetGizmoArrowX
+                            rotation: Qt.vector3d(0, 90, 0)
+                            color: hoveringGizmoHeadX ? Qt.lighter(Qt.rgba(1, 0, 0, 1)) : Qt.rgba(1, 0, 0, 1)
+                        }
+
+                        Arrow {
+                            id: targetGizmoArrowY
+                            rotation: Qt.vector3d(-90, 0, 0)
+                            color: hoveringGizmoHeadY ? Qt.lighter(Qt.rgba(0, 0, 1, 1)) : Qt.rgba(0, 0, 1, 1)
+                        }
+
+                        Arrow {
+                            id: targetGizmoArrowZ
+                            rotation: Qt.vector3d(0, 180, 0)
+                            color: hoveringGizmoHeadZ ? Qt.lighter(Qt.rgba(0, 0.6, 0, 1)) : Qt.rgba(0, 0.6, 0, 1)
+                        }
                     }
                 }
 
@@ -116,57 +139,49 @@ ApplicationWindow {
             targetCamera: worldView.camera
         }
 
-        Overlay2D {
-            id: overlayGizmo2D
-            targetNode: window.targetNode
-            targetView: worldView
+//        Overlay2D {
+//            id: overlayGizmo2D
+//            targetNode: window.targetNode
+//            targetView: worldView
 
-            Rectangle {
-                color: "magenta"
-                y: -100
-                width: 50
-                height: 50
-            }
-        }
+//            Rectangle {
+//                color: "magenta"
+//                y: -100
+//                width: 50
+//                height: 50
+//            }
+//        }
 
         WasdController {
             controlledObject: worldView.camera
-            //acceptedButtons: Qt.RightButton
+            mouseEnabled: !hoveringGizmoHeadX
         }
 
-        TapHandler {
-            onTapped: {
-                var gp = targetNode.mapToGlobal(Qt.vector3d(45, 0, 0))
-                var viewPos = overlayView.mapFrom3DScene(gp)
-                print(eventPoint.position, " : ", viewPos)
+        HoverHandler {
+            id: handler
+            onPointChanged: {
+                var hoverRadius = 20
+                var eventX = point.position.x
+                var eventY = point.position.y
+
+                var xArrowHeadPos = targetGizmo.mapToGlobal(Qt.vector3d(80, 0, 0))
+                var yArrowHeadPos = targetGizmo.mapToGlobal(Qt.vector3d(0, 80, 0))
+                var zArrowHeadPos = targetGizmo.mapToGlobal(Qt.vector3d(0, 0, 80))
+
+                var xArrowHeadPosInView = overlayView.mapFrom3DScene(xArrowHeadPos)
+                var yArrowHeadPosInView = overlayView.mapFrom3DScene(yArrowHeadPos)
+                var zArrowHeadPosInView = overlayView.mapFrom3DScene(zArrowHeadPos)
+
+                var distX = Math.sqrt(Math.pow(eventX - xArrowHeadPosInView.x, 2) + Math.pow(eventY - xArrowHeadPosInView.y, 2))
+                var distY = Math.sqrt(Math.pow(eventX - yArrowHeadPosInView.x, 2) + Math.pow(eventY - yArrowHeadPosInView.y, 2))
+                var distZ = Math.sqrt(Math.pow(eventX - zArrowHeadPosInView.x, 2) + Math.pow(eventY - zArrowHeadPosInView.y, 2))
+
+                hoveringGizmoHeadX = distX < hoverRadius
+                hoveringGizmoHeadY = distY < hoverRadius
+                hoveringGizmoHeadZ = distZ < hoverRadius
+
+                // We could also check z in xyzArrowHeadPosInView in case we hover more than one head
             }
         }
     }
-
-    /*
-      Noen tanker:
-      Hvis man lager små 3d views som overlay, så vil de få et annet perspektiv enn de
-      nodene de er overlay for. Og det vil kanskje se litt rart ut? I så fall, bør de
-      da ha ortho projection? Eller er det derfor bedre å ha ett stort overlay view?
-      Så kan man uansett velge projeksjon.
-
- Vector3 Node::convertWorldToLocalPosition( const Vector3 &worldPos )
-    {
-        if (mNeedParentUpdate)
-        {
-            _updateFromParent();
-        }
-        return mDerivedOrientation.Inverse() * (worldPos - mDerivedPosition) / mDerivedScale;
-    }
-    //-----------------------------------------------------------------------
-    Vector3 Node::convertLocalToWorldPosition( const Vector3 &localPos )
-    {
-        if (mNeedParentUpdate)
-        {
-            _updateFromParent();
-        }
-        return (mDerivedOrientation * localPos * mDerivedScale) + mDerivedPosition;
-    }
-
-    */
 }

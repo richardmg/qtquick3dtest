@@ -10,15 +10,15 @@ Node {
 
     Connections {
         target: targetNode
-        onGlobalTransformChanged: updateGizmo()
+        onGlobalTransformChanged: updateOverlay()
     }
 
     Connections {
         target: targetView.camera
-        onGlobalTransformChanged: updateGizmo()
+        onGlobalTransformChanged: updateOverlay()
     }
 
-    function updateGizmo()
+    function updateOverlay()
     {
         // todo: detect camera? or at least detect the given cameras projection
         // orthographic
