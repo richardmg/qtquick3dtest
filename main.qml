@@ -48,6 +48,7 @@ ApplicationWindow {
                 id: scene
                 Camera {
                     id: camera1
+                    y: 200
                     z: -500
                 }
 
@@ -59,10 +60,16 @@ ApplicationWindow {
                     brightness: 80
                 }
 
+                AxisHelper {
+                    enableXZGrid: true
+                    enableAxisLines: false
+                }
+
                 Model {
                     id: initalCone
+                    y: 200
                     source: "meshes/Teapot.mesh"
-                    scale: Qt.vector3d(10, 10, 10)
+                    scale: Qt.vector3d(20, 20, 20)
                     rotation: Qt.vector3d(45, 45, 45)
                     materials: DefaultMaterial {
                         diffuseColor: "salmon"
@@ -97,7 +104,6 @@ ApplicationWindow {
                         id: overlayGizmo3D
                         scale: Qt.vector3d(5, 5, 5)
                     }
-                    trackPosition: false
                 }
 
             }
