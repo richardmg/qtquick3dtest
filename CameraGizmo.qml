@@ -19,16 +19,38 @@ View3D {
     scene: Node {
         Camera {
             id: localCamera
-//            fieldOfView: 23
             position: targetCamera.globalPosition
             rotation: targetCamera.globalRotation
-            onGlobalTransformChanged: {
-                arrows.position = mapToScene(Qt.vector3d(0.5, 0.5, 20))
-            }
         }
 
         Arrows {
-            id: arrows
+            id: sceneGizmo
+            Connections {
+                target: localCamera
+                onGlobalTransformChanged: {
+                    // A problem here is that the target and this node belongs to two different
+                    // views. And therefore they might not be completly in sync. Especially, the
+                    // first emit does not seem to get throught...
+                    //sceneGizmo.position = overlayCamera.mapToScene(Qt.vector3d(0.94, 0.08, 10))
+                    sceneGizmo.position = localCamera.mapToScene(Qt.vector3d(0.5, 0.5, 180))
+                }
+            }
         }
+
+// in-world-scene implementation
+//                Arrows {
+//                    id: sceneGizmo
+//                    scale: Qt.vector3d(0.1, 0.1, 0.1)
+//                    Connections {
+//                        target: overlayCamera
+//                        onGlobalTransformChanged: {
+//                            // A problem here is that the target and this node belongs to two different
+//                            // views. And therefore they might not be completly in sync. Especially, the
+//                            // first emit does not seem to get throught...
+//                            //sceneGizmo.position = overlayCamera.mapToScene(Qt.vector3d(0.94, 0.08, 10))
+//                            sceneGizmo.position = overlayCamera.mapToScene(Qt.vector3d(0.5, 0.5, 10))
+//                        }
+//                    }
+//                }
     }
 }

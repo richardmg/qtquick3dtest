@@ -74,7 +74,6 @@ ApplicationWindow {
                     id: initalPot
                     y: 200
                     source: "meshes/Teapot.mesh"
-//                    rotation: Qt.vector3d(0, 0, 45)
                     scale: Qt.vector3d(20, 20, 20)
                     materials: DefaultMaterial {
                         diffuseColor: "salmon"
@@ -113,31 +112,14 @@ ApplicationWindow {
                     }
                 }
 
-                Arrows {
-                    id: sceneGizmo
-                    scale: Qt.vector3d(0.1, 0.1, 0.1)
-                    Connections {
-                        target: overlayCamera
-                        onGlobalTransformChanged: {
-                            sceneGizmo.position = overlayCamera.mapToScene(Qt.vector3d(0.94, 0.08, 10))
-                        }
-                    }
-                }
+
             }
         }
 
-//        Overlay2D {
-//            id: overlayGizmo2D
-//            targetNode: window.targetNode
-//            targetView: worldView
-
-//            Rectangle {
-//                color: "magenta"
-//                y: -100
-//                width: 50
-//                height: 50
-//            }
-//        }
+        CameraGizmo {
+            targetCamera: camera1
+            anchors.right: parent.right
+        }
 
         WasdController {
             controlledObject: worldView.camera
@@ -170,5 +152,19 @@ ApplicationWindow {
                 // We could also check z in xyzArrowHeadPosInView in case we hover more than one head
             }
         }
+
+//        overlay2d {
+//            id: overlayGizmo2D
+//            targetNode: window.targetNode
+//            targetView: worldView
+
+//            Rectangle {
+//                color: "magenta"
+//                y: -100
+//                width: 50
+//                height: 50
+//            }
+//        }
+
     }
 }
