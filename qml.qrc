@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>teapot.mesh</file>
+        <file>meshes/Teapot.mesh</file>
         <file>Lowpolylandscape.qml</file>
         <file>meshes/Plane.mesh</file>
         <file>Sun.qml</file>

@@ -51,13 +51,21 @@ ApplicationWindow {
                     z: -500
                 }
 
+                Light {
+                    id: light
+                    y: 400
+                    diffuseColor: Qt.rgba(0.4, 0.5, 0.0, 1.0)
+                    rotation: Qt.vector3d(60, 0, 0)
+                    brightness: 80
+                }
+
                 Model {
                     id: initalCone
-                    source: "teapot.mesh"
-                    scale: Qt.vector3d(0.5, 0.5, 0.5)
+                    source: "meshes/Teapot.mesh"
+                    scale: Qt.vector3d(10, 10, 10)
                     rotation: Qt.vector3d(45, 45, 45)
                     materials: DefaultMaterial {
-                        diffuseColor: "yellow"
+                        diffuseColor: "salmon"
                     }
                 }
             }
