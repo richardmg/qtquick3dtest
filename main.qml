@@ -106,37 +106,24 @@ ApplicationWindow {
                     // scaling or billboarding.
                     targetNode: window.targetNode
                     targetView: worldView
-                    Node {
-                        scale: Qt.vector3d(7, 7, 7)
-
-                        Arrow {
-                            id: targetGizmoArrowX
-                            rotation: Qt.vector3d(0, 90, 0)
-                            color: hoveringGizmoHeadX ? Qt.lighter(Qt.rgba(1, 0, 0, 1)) : Qt.rgba(1, 0, 0, 1)
-                        }
-
-                        Arrow {
-                            id: targetGizmoArrowY
-                            rotation: Qt.vector3d(-90, 0, 0)
-                            color: hoveringGizmoHeadY ? Qt.lighter(Qt.rgba(0, 0, 1, 1)) : Qt.rgba(0, 0, 1, 1)
-                        }
-
-                        Arrow {
-                            id: targetGizmoArrowZ
-                            rotation: Qt.vector3d(0, 180, 0)
-                            color: hoveringGizmoHeadZ ? Qt.lighter(Qt.rgba(0, 0.6, 0, 1)) : Qt.rgba(0, 0.6, 0, 1)
-                        }
+                    Arrows {
+                        highlightX: hoveringGizmoHeadX
+                        highlightY: hoveringGizmoHeadY
+                        highlightZ: hoveringGizmoHeadZ
                     }
                 }
 
+                Arrows {
+                    id: sceneGizmo
+                    scale: Qt.vector3d(0.1, 0.1, 0.1)
+                    Connections {
+                        target: overlayCamera
+                        onGlobalTransformChanged: {
+                            sceneGizmo.position = overlayCamera.mapToScene(Qt.vector3d(0.94, 0.08, 10))
+                        }
+                    }
+                }
             }
-        }
-
-        CameraGizmo {
-            width: 70
-            height: 70
-            anchors.right: parent.right
-            targetCamera: worldView.camera
         }
 
 //        Overlay2D {

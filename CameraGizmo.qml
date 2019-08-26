@@ -18,14 +18,17 @@ View3D {
 
     scene: Node {
         Camera {
-            fieldOfView: 23
-        }
-        Arrows {
-            z: 100
-            rotation: {
-                var p = targetCamera.globalRotation
-                Qt.vector3d(-p.x, -p.y, -p.z);
+            id: localCamera
+//            fieldOfView: 23
+            position: targetCamera.globalPosition
+            rotation: targetCamera.globalRotation
+            onGlobalTransformChanged: {
+                arrows.position = mapToScene(Qt.vector3d(0.5, 0.5, 20))
             }
+        }
+
+        Arrows {
+            id: arrows
         }
     }
 }
