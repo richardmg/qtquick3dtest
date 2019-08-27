@@ -14,12 +14,16 @@ ApplicationWindow {
     visible: true
 
     property Node targetNode: initalPot
+    property var targetPos
+    property var startDragPos
+
     property bool useGlobalGizmo: true
     property bool usePerspective: true
 
     property bool hoveringGizmoHeadX: false
     property bool hoveringGizmoHeadY: false
     property bool hoveringGizmoHeadZ: false
+
 
     header: ToolBar {
         RowLayout {
@@ -150,6 +154,30 @@ ApplicationWindow {
                 hoveringGizmoHeadZ = distZ < hoverRadius
 
                 // We could also check z in xyzArrowHeadPosInView in case we hover more than one head
+            }
+        }
+
+        TapHandler {
+            onPressedChanged: {
+                if (pressed) {
+                    startDragPos = point.position
+                    targetPos = targetNode.position
+                }
+            }
+        }
+
+        DragHandler {
+            target: null
+            onCentroidChanged: {
+//                var dist = Math.sqrt(Math.pow(translation.x, 2) + Math.pow(translation.y, 2))
+                var dragDist = translation.x / 10
+//                if (hoveringGizmoHeadX)
+//                    targetNode.position = Qt.vector3d(targetPos.x + dragDist, targetPos.y, targetPos.z)
+                var diffPosX = startDragPos.x - centroid.position.x
+                var diffPosY = startDragPos.y - centroid.position.y
+                print("drag:", diffPosX, diffPosY)
+                targetNode.position = Qt.vector3d(targetNode.position.x - diffPosX, targetPos.y, targetPos.z)
+                startDragPos = centroid.position
             }
         }
 
