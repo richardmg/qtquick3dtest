@@ -24,6 +24,9 @@ ApplicationWindow {
     property bool hoveringGizmoHeadY: false
     property bool hoveringGizmoHeadZ: false
 
+    property bool draggingGizmoHeadX: false
+    property bool draggingGizmoHeadY: false
+    property bool draggingGizmoHeadZ: false
 
     header: ToolBar {
         RowLayout {
@@ -110,9 +113,9 @@ ApplicationWindow {
                     targetNode: window.targetNode
                     targetView: worldView
                     Arrows {
-                        highlightX: hoveringGizmoHeadX
-                        highlightY: hoveringGizmoHeadY
-                        highlightZ: hoveringGizmoHeadZ
+                        highlightX: hoveringGizmoHeadX || draggingGizmoHeadX
+                        highlightY: hoveringGizmoHeadY || draggingGizmoHeadY
+                        highlightZ: hoveringGizmoHeadZ || draggingGizmoHeadZ
                     }
                 }
 
@@ -125,10 +128,10 @@ ApplicationWindow {
             anchors.right: parent.right
         }
 
-        WasdController {
-            controlledObject: worldView.camera
-            mouseEnabled: !hoveringGizmoHeadX
-        }
+//        WasdController {
+//            controlledObject: worldView.camera
+//            mouseEnabled: !hoveringGizmoHeadX
+//        }
 
         HoverHandler {
             id: handler
@@ -157,26 +160,46 @@ ApplicationWindow {
             }
         }
 
-        TapHandler {
+        PointHandler {
+            id: pointHandler
+            acceptedButtons: Qt.LeftButton
+            property bool pressed: point.pressedButtons === Qt.LeftButton
             onPressedChanged: {
                 if (pressed) {
                     startDragPos = point.position
                     targetPos = targetNode.position
+                    if (hoveringGizmoHeadX)
+                        draggingGizmoHeadX = true
+                    if (hoveringGizmoHeadY)
+                        draggingGizmoHeadY = true
+                    if (hoveringGizmoHeadZ)
+                        draggingGizmoHeadZ = true
+                } else {
+                    draggingGizmoHeadX = false
+                    draggingGizmoHeadY = false
+                    draggingGizmoHeadZ = false
                 }
             }
         }
 
         DragHandler {
             target: null
+            acceptedButtons: Qt.LeftButton
             onCentroidChanged: {
-//                var dist = Math.sqrt(Math.pow(translation.x, 2) + Math.pow(translation.y, 2))
-                var dragDist = translation.x / 10
-//                if (hoveringGizmoHeadX)
-//                    targetNode.position = Qt.vector3d(targetPos.x + dragDist, targetPos.y, targetPos.z)
+                if (centroid.pressedButtons !== Qt.LeftButton)
+                    return
+
+                // 1. We should not get a change to centroid when dragging stops (with an unrelated position), since
+                // 		that will just confuse any calculations. We're then (after som debugging) forced to check
+                // 		centroid.pressedButtons.
+                // 2  Add a pressed property to _all_ PointerHandlers, at least PointHandler.
+//                print("drag:", centroid.pressedButtons === Qt.LeftButton, centroid.position)
+
                 var diffPosX = startDragPos.x - centroid.position.x
                 var diffPosY = startDragPos.y - centroid.position.y
-                print("drag:", diffPosX, diffPosY)
-                targetNode.position = Qt.vector3d(targetNode.position.x - diffPosX, targetPos.y, targetPos.z)
+
+                if (draggingGizmoHeadX)
+                    targetNode.position = Qt.vector3d(targetNode.position.x - diffPosX, targetPos.y, targetPos.z)
                 startDragPos = centroid.position
             }
         }
