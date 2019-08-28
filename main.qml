@@ -13,20 +13,10 @@ ApplicationWindow {
     height: 480
     visible: true
 
-    property Node targetNode: initalPot
-    property var targetPos
-    property var startDragPos
+    property Node nodeBeingManipulated: initalPot
 
     property bool useGlobalGizmo: true
     property bool usePerspective: true
-
-    property bool hoveringGizmoHeadX: false
-    property bool hoveringGizmoHeadY: false
-    property bool hoveringGizmoHeadZ: false
-
-    property bool draggingGizmoHeadX: false
-    property bool draggingGizmoHeadY: false
-    property bool draggingGizmoHeadZ: false
 
     header: ToolBar {
         RowLayout {
@@ -110,15 +100,13 @@ ApplicationWindow {
                     // cannot use the same overlay with two different cameras/views.
                     // The same is also true if you want perspective, and use auto
                     // scaling or billboarding.
-                    targetNode: window.targetNode
+                    targetNode: window.nodeBeingManipulated
                     targetView: worldView
                     Arrows {
-                        highlightX: hoveringGizmoHeadX || draggingGizmoHeadX
-                        highlightY: hoveringGizmoHeadY || draggingGizmoHeadY
-                        highlightZ: hoveringGizmoHeadZ || draggingGizmoHeadZ
+                        highlightX: dragHandlerGizmoX.hovering || dragHandlerGizmoX.dragging
+                        highlightY: dragHandlerGizmoY.hovering || dragHandlerGizmoY.dragging
                     }
                 }
-
 
             }
         }
@@ -133,74 +121,25 @@ ApplicationWindow {
 //            mouseEnabled: !hoveringGizmoHeadX
 //        }
 
-        HoverHandler {
-            id: handler
-            onPointChanged: {
-                var hoverRadius = 20
-                var eventX = point.position.x
-                var eventY = point.position.y
-
-                var xArrowHeadPos = targetGizmo.mapToGlobal(Qt.vector3d(80, 0, 0))
-                var yArrowHeadPos = targetGizmo.mapToGlobal(Qt.vector3d(0, 80, 0))
-                var zArrowHeadPos = targetGizmo.mapToGlobal(Qt.vector3d(0, 0, 80))
-
-                var xArrowHeadPosInView = overlayView.mapFrom3DScene(xArrowHeadPos)
-                var yArrowHeadPosInView = overlayView.mapFrom3DScene(yArrowHeadPos)
-                var zArrowHeadPosInView = overlayView.mapFrom3DScene(zArrowHeadPos)
-
-                var distX = Math.sqrt(Math.pow(eventX - xArrowHeadPosInView.x, 2) + Math.pow(eventY - xArrowHeadPosInView.y, 2))
-                var distY = Math.sqrt(Math.pow(eventX - yArrowHeadPosInView.x, 2) + Math.pow(eventY - yArrowHeadPosInView.y, 2))
-                var distZ = Math.sqrt(Math.pow(eventX - zArrowHeadPosInView.x, 2) + Math.pow(eventY - zArrowHeadPosInView.y, 2))
-
-                hoveringGizmoHeadX = distX < hoverRadius
-                hoveringGizmoHeadY = distY < hoverRadius
-                hoveringGizmoHeadZ = distZ < hoverRadius
-
-                // We could also check z in xyzArrowHeadPosInView in case we hover more than one head
+        DragHandler3D {
+            id: dragHandlerGizmoX
+            view3D: overlayView
+            targetNode: targetGizmo
+            localPosition: Qt.vector3d(80, 0, 0)
+            onDragMoved: {
+                var oldPos = nodeBeingManipulated.position
+                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + deltaX, oldPos.y, oldPos.z)
             }
         }
 
-        PointHandler {
-            id: pointHandler
-            acceptedButtons: Qt.LeftButton
-            property bool pressed: point.pressedButtons === Qt.LeftButton
-            onPressedChanged: {
-                if (pressed) {
-                    startDragPos = point.position
-                    targetPos = targetNode.position
-                    if (hoveringGizmoHeadX)
-                        draggingGizmoHeadX = true
-                    if (hoveringGizmoHeadY)
-                        draggingGizmoHeadY = true
-                    if (hoveringGizmoHeadZ)
-                        draggingGizmoHeadZ = true
-                } else {
-                    draggingGizmoHeadX = false
-                    draggingGizmoHeadY = false
-                    draggingGizmoHeadZ = false
-                }
-            }
-        }
-
-        DragHandler {
-            target: null
-            acceptedButtons: Qt.LeftButton
-            onCentroidChanged: {
-                if (centroid.pressedButtons !== Qt.LeftButton)
-                    return
-
-                // 1. We should not get a change to centroid when dragging stops (with an unrelated position), since
-                // 		that will just confuse any calculations. We're then (after som debugging) forced to check
-                // 		centroid.pressedButtons.
-                // 2  Add a pressed property to _all_ PointerHandlers, at least PointHandler.
-//                print("drag:", centroid.pressedButtons === Qt.LeftButton, centroid.position)
-
-                var diffPosX = startDragPos.x - centroid.position.x
-                var diffPosY = startDragPos.y - centroid.position.y
-
-                if (draggingGizmoHeadX)
-                    targetNode.position = Qt.vector3d(targetNode.position.x - diffPosX, targetPos.y, targetPos.z)
-                startDragPos = centroid.position
+        DragHandler3D {
+            id: dragHandlerGizmoY
+            view3D: overlayView
+            targetNode: targetGizmo
+            localPosition: Qt.vector3d(0, 80, 0)
+            onDragMoved: {
+                var oldPos = nodeBeingManipulated.position
+                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y - deltaY, oldPos.z)
             }
         }
 
