@@ -104,11 +104,11 @@ ApplicationWindow {
                     targetView: worldView
                     Arrows {
                         highlightX: dragHandlerGizmoX.hovering || dragHandlerGizmoX.dragging
-                        highlightY: dragHandlerGizmoY.hovering || dragHandlerGizmoY.dragging
+//                        highlightY: dragHandlerGizmoY.hovering || dragHandlerGizmoY.dragging
                     }
                 }
-
             }
+
         }
 
         CameraGizmo {
@@ -132,16 +132,16 @@ ApplicationWindow {
             }
         }
 
-        DragHandler3D {
-            id: dragHandlerGizmoY
-            view3D: overlayView
-            targetNode: targetGizmo
-            localPosition: Qt.vector3d(0, 80, 0)
-            onDragMoved: {
-                var oldPos = nodeBeingManipulated.position
-                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y - deltaY, oldPos.z)
-            }
-        }
+//        DragHandler3D {
+//            id: dragHandlerGizmoY
+//            view3D: overlayView
+//            targetNode: targetGizmo
+//            position: Qt.vector3d(0, 80, 0)
+//            onDragMoved: {
+//                var oldPos = nodeBeingManipulated.position
+//                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y - deltaY, oldPos.z)
+//            }
+//        }
 
 //        overlay2d {
 //            id: overlayGizmo2D

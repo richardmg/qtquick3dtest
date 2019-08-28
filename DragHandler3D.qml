@@ -1,65 +1,46 @@
 import QtQuick 2.12
 import QtQuick3D 1.0
 
-Item {
+MouseArea {
     id: root
+
     property Node targetNode
     property View3D view3D
-    property var localPosition: Qt.vector3d(0, 0, 0)
-    property real hitRadius: 20
 
-    property bool hovering
-    property bool dragging
+    property var localPosition: Qt.vector3d(0, 0, 0)
+    property real radius: 20
+
+    property bool hovering: false
+    property bool dragging: false
 
     signal dragMoved(real deltaX, real deltaY)
 
-    property var _targetPos
-    property var _prevMousePos
+    property real _prevMouseX
+    property real _prevMouseY
 
     anchors.fill: parent
+    hoverEnabled: true
 
-    PointHandler {
-        acceptedButtons: Qt.LeftButton
-        property bool pressed: point.pressedButtons === Qt.LeftButton
-        onPressedChanged: {
-            dragging = pressed && hovering
-            _prevMousePos = point.position
-            _targetPos = targetNode.position
-        }
+    onPressedChanged: {
+        _prevMouseX = mouseX
+        _prevMouseY = mouseY
+        dragging = hovering && pressed
     }
 
-    HoverHandler {
-        onPointChanged: {
-            var eventX = point.position.x
-            var eventY = point.position.y
+    onPositionChanged: {
+        var globalPosition = targetNode ? targetNode.mapToGlobal(localPosition) : position
+        var viewPosition = view3D.mapFrom3DScene(globalPosition)
+        var distance = Math.sqrt(Math.pow(mouseX - viewPosition.x, 2) + Math.pow(mouseY - viewPosition.y, 2))
+        hovering = distance < radius
 
-            var globalPosition = targetNode.mapToGlobal(localPosition)
-            var viewPosition = view3D.mapFrom3DScene(globalPosition)
-            var distance = Math.sqrt(Math.pow(eventX - viewPosition.x, 2) + Math.pow(eventY - viewPosition.y, 2))
+        if (!dragging)
+            return
 
-            hovering = distance < hitRadius
-        }
-    }
+        var deltaX = mouseX - _prevMouseX
+        var deltaY = mouseY - _prevMouseY
+        _prevMouseX = mouseX
+        _prevMouseY = mouseY
 
-    DragHandler {
-        target: null
-        acceptedButtons: Qt.LeftButton
-        onCentroidChanged: {
-            if (!root.dragging)
-                return
-            if (centroid.pressedButtons !== acceptedButtons)
-                return
-
-            // 1. We should not get a change to centroid when dragging stops (with an unrelated position), since
-            // 		that will just confuse any calculations. We're then (after som debugging) forced to check
-            // 		centroid.pressedButtons.
-            // 2  Add a pressed property to _all_ PointerHandlers, at least PointHandler.
-//                print("drag:", centroid.pressedButtons === Qt.LeftButton, centroid.position)
-
-            var deltaX = centroid.position.x - _prevMousePos.x
-            var deltaY = centroid.position.y - _prevMousePos.y
-            dragMoved(deltaX, deltaY)
-            _prevMousePos = centroid.position
-        }
+        dragMoved(deltaX, deltaY)
     }
 }
