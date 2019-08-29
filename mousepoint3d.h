@@ -67,6 +67,8 @@ private:
     bool m_dragging = false;
 
     QPoint m_lastMousePos;
+
+    static MousePoint3D *s_mouseGrab;
 };
 
 QT_END_NAMESPACE
