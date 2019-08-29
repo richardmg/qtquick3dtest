@@ -76,6 +76,28 @@ void MousePoint3D::componentComplete()
     m_view3D->installEventFilter(this);
 }
 
+QVector3D lineIntersectPlane(const QVector3D &linePos0, const QVector3D &linePos1, const QVector3D &planePos, const QVector3D &planeNormal)
+{
+    QVector3D lineDirection = linePos1 - linePos0;
+    QVector3D linePos0RelativeToPlane = linePos0 - planePos;
+
+    float dotLineDirection = QVector3D::dotProduct(planeNormal, lineDirection);
+    float dotLinePos0 = -QVector3D::dotProduct(planeNormal, linePos0RelativeToPlane);
+
+    if (qFuzzyIsNull(dotLineDirection)) {
+        // Line is parallel to plane. If N == 0 it  means that the
+        // line lies in plane. Otherwise, no intersection.
+        return QVector3D();
+    }
+
+    // If we treat the ray as a line segment (with a start and end), distanceFromLinePos0ToPlane
+    // must be between 0 and 1. Otherwise the line will not be long enough to intersect the plane.
+    // But a ray only has a fixed start, but no end, so we don't check for that here. Note also
+    // that a line is different from a ray in that it has no fixed start either.
+    float distanceFromLinePos0ToPlane = dotLinePos0 / dotLineDirection;
+    return linePos0 + distanceFromLinePos0ToPlane * lineDirection;
+}
+
 bool MousePoint3D::eventFilter(QObject *, QEvent *event)
 {
     auto const node = static_cast<QQuick3DNode *>(parent());
