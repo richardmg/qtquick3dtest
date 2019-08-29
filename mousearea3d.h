@@ -1,5 +1,5 @@
-#ifndef MOUSEPOINT3D
-#define MOUSEPOINT3D
+#ifndef MOUSEAREA3D
+#define MOUSEAREA3D
 
 //
 //  W A R N I N G
@@ -20,7 +20,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class Q_QUICK3D_EXPORT MousePoint3D : public QObject, public QQmlParserStatus
+class Q_QUICK3D_EXPORT MouseArea3D : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_PROPERTY(QQuick3DViewport *view3D READ view3D WRITE setView3D NOTIFY view3DChanged)
@@ -34,7 +34,7 @@ class Q_QUICK3D_EXPORT MousePoint3D : public QObject, public QQmlParserStatus
     Q_INTERFACES(QQmlParserStatus)
 
 public:
-    MousePoint3D(QQuick3DNode *parent = nullptr);
+    MouseArea3D(QQuick3DNode *parent = nullptr);
 
     QQuick3DViewport *view3D() const;
 
@@ -72,7 +72,7 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
-    Q_DISABLE_COPY(MousePoint3D)
+    Q_DISABLE_COPY(MouseArea3D)
     QQuick3DViewport *m_view3D = nullptr;
 
     qreal m_x;
@@ -86,11 +86,11 @@ private:
     QPoint m_lastMousePos;
 
 private:
-    static MousePoint3D *s_mouseGrab;
+    static MouseArea3D *s_mouseGrab;
 };
 
 QT_END_NAMESPACE
 
-QML_DECLARE_TYPE(MousePoint3D)
+QML_DECLARE_TYPE(MouseArea3D)
 
 #endif // MOUSEPOINT3D

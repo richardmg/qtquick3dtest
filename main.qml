@@ -7,7 +7,7 @@ import QtQuick3D.Scripts 1.0
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.12
 
-import MousePoint3D 0.1
+import MouseArea3D 0.1
 
 ApplicationWindow {
     id: window
@@ -108,7 +108,7 @@ ApplicationWindow {
                         highlightX: mousePointGizmoX.hovering || mousePointGizmoX.dragging
                         highlightY: mousePointGizmoY.hovering || mousePointGizmoY.dragging
                         highlightZ: mousePointGizmoZ.hovering || mousePointGizmoZ.dragging
-                        MousePoint3D {
+                        MouseArea3D {
                             id: mousePointGizmoX
                             view3D: overlayView
                             x: 0
@@ -120,7 +120,7 @@ ApplicationWindow {
                                 nodeBeingManipulated.position = Qt.vector3d(oldPos.x + deltaX, oldPos.y, oldPos.z)
                             }
                         }
-//                        MousePoint3D {
+//                        MouseArea3D {
 //                            id: mousePointGizmoY
 //                            view3D: overlayView
 //                            position: Qt.vector3d(0, 11, 0)
@@ -129,7 +129,7 @@ ApplicationWindow {
 //                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y - deltaY, oldPos.z)
 //                            }
 //                        }
-//                        MousePoint3D {
+//                        MouseArea3D {
 //                            id: mousePointGizmoZ
 //                            view3D: overlayView
 //                            position: Qt.vector3d(0, 0, 11)

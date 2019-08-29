@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQuick3D/private/qquick3dviewport_p.h>
-#include "mousepoint3d.h"
+#include "mousearea3d.h"
 
 int main(int argc, char *argv[])
 {
@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     QSurfaceFormat::setDefaultFormat(QQuick3DViewport::idealSurfaceFormat());
 
-    qmlRegisterType<MousePoint3D>("MousePoint3D", 0, 1, "MousePoint3D");
+    qmlRegisterType<MouseArea3D>("MouseArea3D", 0, 1, "MouseArea3D");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

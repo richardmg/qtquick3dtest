@@ -1,53 +1,53 @@
-﻿#include "mousepoint3d.h"
+﻿#include "mousearea3d.h"
 
 #include <QtQml>
 #include <QGuiApplication>
 
 QT_BEGIN_NAMESPACE
 
-MousePoint3D *MousePoint3D::s_mouseGrab = nullptr;
+MouseArea3D *MouseArea3D::s_mouseGrab = nullptr;
 
-MousePoint3D::MousePoint3D(QQuick3DNode *parent)
+MouseArea3D::MouseArea3D(QQuick3DNode *parent)
     : QObject(parent)
 {
 }
 
-QQuick3DViewport *MousePoint3D::view3D() const
+QQuick3DViewport *MouseArea3D::view3D() const
 {
     return m_view3D;
 }
 
-bool MousePoint3D::hovering() const
+bool MouseArea3D::hovering() const
 {
     return m_hovering;
 }
 
-bool MousePoint3D::dragging() const
+bool MouseArea3D::dragging() const
 {
     return m_dragging;
 }
 
-qreal MousePoint3D::x() const
+qreal MouseArea3D::x() const
 {
     return m_x;
 }
 
-qreal MousePoint3D::y() const
+qreal MouseArea3D::y() const
 {
     return m_y;
 }
 
-qreal MousePoint3D::width() const
+qreal MouseArea3D::width() const
 {
     return m_width;
 }
 
-qreal MousePoint3D::height() const
+qreal MouseArea3D::height() const
 {
     return m_height;
 }
 
-void MousePoint3D::setView3D(QQuick3DViewport *view3D)
+void MouseArea3D::setView3D(QQuick3DViewport *view3D)
 {
     if (m_view3D == view3D)
         return;
@@ -56,7 +56,7 @@ void MousePoint3D::setView3D(QQuick3DViewport *view3D)
     emit view3DChanged();
 }
 
-void MousePoint3D::setX(qreal x)
+void MouseArea3D::setX(qreal x)
 {
     if (m_x == x)
         return;
@@ -65,7 +65,7 @@ void MousePoint3D::setX(qreal x)
     emit xChanged(x);
 }
 
-void MousePoint3D::setY(qreal y)
+void MouseArea3D::setY(qreal y)
 {
     if (m_y == y)
         return;
@@ -74,7 +74,7 @@ void MousePoint3D::setY(qreal y)
     emit yChanged(y);
 }
 
-void MousePoint3D::setWidth(qreal width)
+void MouseArea3D::setWidth(qreal width)
 {
     if (m_width == width)
         return;
@@ -83,7 +83,7 @@ void MousePoint3D::setWidth(qreal width)
     emit widthChanged(width);
 }
 
-void MousePoint3D::setHeight(qreal height)
+void MouseArea3D::setHeight(qreal height)
 {
     if (m_height == height)
         return;
@@ -92,7 +92,7 @@ void MousePoint3D::setHeight(qreal height)
     emit heightChanged(height);
 }
 
-void MousePoint3D::componentComplete()
+void MouseArea3D::componentComplete()
 {
     if (!m_view3D) {
         qmlDebug(this) << "view3D missing!";
@@ -126,7 +126,7 @@ QVector3D lineIntersectPlane(const QVector3D &linePos0, const QVector3D &linePos
     return linePos0 + distanceFromLinePos0ToPlane * lineDirection;
 }
 
-bool MousePoint3D::eventFilter(QObject *, QEvent *event)
+bool MouseArea3D::eventFilter(QObject *, QEvent *event)
 {
     auto const node = static_cast<QQuick3DNode *>(parent());
     auto const me = static_cast<QMouseEvent *>(event);
@@ -194,6 +194,6 @@ bool MousePoint3D::eventFilter(QObject *, QEvent *event)
     return false;
 }
 
-#include "moc_mousepoint3d.cpp"
+#include "moc_mousearea3d.cpp"
 
 QT_END_NAMESPACE
