@@ -16,6 +16,5 @@
         <file>CameraGizmo.qml</file>
         <file>Overlay2D.qml</file>
         <file>Overlay3D.qml</file>
-        <file>DragHandler3D.qml</file>
     </qresource>
 </RCC>

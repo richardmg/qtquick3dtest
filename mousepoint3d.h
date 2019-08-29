@@ -20,7 +20,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class Q_QUICK3D_EXPORT MousePoint3D : public QObject
+class Q_QUICK3D_EXPORT MousePoint3D : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_PROPERTY(QQuick3DViewport *view3D READ view3D WRITE setView3D NOTIFY view3DChanged)
@@ -49,16 +49,23 @@ signals:
     void radiusChanged();
     void hoveringChanged();
     void draggingChanged();
+    void dragMoved(qreal deltaX, qreal deltaY);
+
+protected:
+    void classBegin() override {}
+    void componentComplete() override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
     Q_DISABLE_COPY(MousePoint3D)
-    QQuick3DViewport * m_view3D;
+    QQuick3DViewport *m_view3D = nullptr;
     QVector3D m_position;
     qreal m_radius = 20;
     bool m_hovering = false;
     bool m_dragging = false;
-};
 
+    QPoint m_lastMousePos;
+};
 
 QT_END_NAMESPACE
 

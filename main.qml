@@ -7,6 +7,8 @@ import QtQuick3D.Scripts 1.0
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.12
 
+import MousePoint3D 0.1
+
 ApplicationWindow {
     id: window
     width: 640
@@ -103,16 +105,25 @@ ApplicationWindow {
                     targetNode: window.nodeBeingManipulated
                     targetView: worldView
                     Arrows {
-                        highlightX: dragHandlerGizmoX.hovering || dragHandlerGizmoX.dragging
-                        highlightY: dragHandlerGizmoY.hovering || dragHandlerGizmoY.dragging
+                        highlightX: mousePointGizmoX.hovering || mousePointGizmoX.dragging
+                        highlightY: mousePointGizmoY.hovering || mousePointGizmoY.dragging
                         MousePoint3D {
                             id: mousePointGizmoX
                             view3D: overlayView
-                            position: Qt.vector3d(80, 0, 0)
-//                            onDragMoved: {
-//                                var oldPos = nodeBeingManipulated.position
-//                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + deltaX, oldPos.y, oldPos.z)
-//                            }
+                            position: Qt.vector3d(11, 0, 0)
+                            onDragMoved: {
+                                var oldPos = nodeBeingManipulated.position
+                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + deltaX, oldPos.y, oldPos.z)
+                            }
+                        }
+                        MousePoint3D {
+                            id: mousePointGizmoY
+                            view3D: overlayView
+                            position: Qt.vector3d(0, 11, 0)
+                            onDragMoved: {
+                                var oldPos = nodeBeingManipulated.position
+                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y - deltaY, oldPos.z)
+                            }
                         }
                     }
                 }
@@ -130,27 +141,27 @@ ApplicationWindow {
 //            mouseEnabled: !hoveringGizmoHeadX
 //        }
 
-        DragHandler3D {
-            id: dragHandlerGizmoX
-            view3D: overlayView
-            targetNode: targetGizmo
-            localPosition: Qt.vector3d(80, 0, 0)
-            onDragMoved: {
-                var oldPos = nodeBeingManipulated.position
-                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + deltaX, oldPos.y, oldPos.z)
-            }
-        }
+//        DragHandler3D {
+//            id: dragHandlerGizmoX
+//            view3D: overlayView
+//            targetNode: targetGizmo
+//            localPosition: Qt.vector3d(80, 0, 0)
+//            onDragMoved: {
+//                var oldPos = nodeBeingManipulated.position
+//                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + deltaX, oldPos.y, oldPos.z)
+//            }
+//        }
 
-        DragHandler3D {
-            id: dragHandlerGizmoY
-            view3D: overlayView
-            targetNode: targetGizmo
-            localPosition: Qt.vector3d(0, 80, 0)
-            onDragMoved: {
-                var oldPos = nodeBeingManipulated.position
-                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y - deltaY, oldPos.z)
-            }
-        }
+//        DragHandler3D {
+//            id: dragHandlerGizmoY
+//            view3D: overlayView
+//            targetNode: targetGizmo
+//            localPosition: Qt.vector3d(0, 80, 0)
+//            onDragMoved: {
+//                var oldPos = nodeBeingManipulated.position
+//                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y - deltaY, oldPos.z)
+//            }
+//        }
 
 //        overlay2d {
 //            id: overlayGizmo2D
