@@ -17,16 +17,6 @@ QQuick3DViewport *MousePoint3D::view3D() const
     return m_view3D;
 }
 
-QVector3D MousePoint3D::position() const
-{
-    return m_position;
-}
-
-qreal MousePoint3D::radius() const
-{
-    return m_radius;
-}
-
 bool MousePoint3D::hovering() const
 {
     return m_hovering;
@@ -35,6 +25,26 @@ bool MousePoint3D::hovering() const
 bool MousePoint3D::dragging() const
 {
     return m_dragging;
+}
+
+qreal MousePoint3D::x() const
+{
+    return m_x;
+}
+
+qreal MousePoint3D::y() const
+{
+    return m_y;
+}
+
+qreal MousePoint3D::width() const
+{
+    return m_width;
+}
+
+qreal MousePoint3D::height() const
+{
+    return m_height;
 }
 
 void MousePoint3D::setView3D(QQuick3DViewport *view3D)
@@ -46,22 +56,40 @@ void MousePoint3D::setView3D(QQuick3DViewport *view3D)
     emit view3DChanged();
 }
 
-void MousePoint3D::setPosition(QVector3D position)
+void MousePoint3D::setX(qreal x)
 {
-    if (m_position == position)
+    if (m_x == x)
         return;
 
-    m_position = position;
-    emit positionChanged();
+    m_x = x;
+    emit xChanged(x);
 }
 
-void MousePoint3D::setRadius(qreal radius)
+void MousePoint3D::setY(qreal y)
 {
-    if (qFuzzyCompare(m_radius, radius))
+    if (m_y == y)
         return;
 
-    m_radius = radius;
-    emit radiusChanged();
+    m_y = y;
+    emit yChanged(y);
+}
+
+void MousePoint3D::setWidth(qreal width)
+{
+    if (m_width == width)
+        return;
+
+    m_width = width;
+    emit widthChanged(width);
+}
+
+void MousePoint3D::setHeight(qreal height)
+{
+    if (m_height == height)
+        return;
+
+    m_height = height;
+    emit heightChanged(height);
 }
 
 void MousePoint3D::componentComplete()
@@ -108,10 +136,23 @@ bool MousePoint3D::eventFilter(QObject *, QEvent *event)
         if (s_mouseGrab && s_mouseGrab != this)
             break;
 
-        QVector3D globalPosition = node ? node->mapToGlobal(m_position) : m_position;
-        QVector3D viewPosition = m_view3D->mapFrom3DScene(globalPosition);
-        qreal dist = qSqrt(qPow(me->pos().x() - viewPosition.x(), 2) + qPow(me->pos().y() - viewPosition.y(), 2));
-        bool mouseOnTopOfPoint = dist < m_radius;
+        const QVector3D mousePos1(me->pos().x(), me->pos().y(), 0);
+        const QVector3D mousePos2(me->pos().x(), me->pos().y(), 1);
+        const QVector3D rayPos0 = m_view3D->mapTo3DScene(mousePos1);
+        const QVector3D rayPos1 = m_view3D->mapTo3DScene(mousePos2);
+
+        const QVector3D globalPosition = node ? node->mapToGlobal(QVector3D(0, 0, 0)) : QVector3D(0, 0, 0);
+        const QVector3D globalPlaneNormal(0, 0, -1); // must transform to global, but not scaled
+        const QVector3D intersectPos = lineIntersectPlane(rayPos0, rayPos1, globalPosition, globalPlaneNormal);
+        const QVector3D planePos = node->mapFromGlobal(intersectPos);
+
+        const bool mouseOnTopOfPoint =
+                planePos.x() >= m_x &&
+                planePos.x() <= m_x + m_width &&
+                planePos.y() >= m_y &&
+                planePos.y() <= m_y + m_height;
+
+        qDebug() << planePos << mouseOnTopOfPoint;
         const bool buttonPressed = QGuiApplication::mouseButtons().testFlag(Qt::LeftButton);
 
         // The filter will detect a mouse press on the view, but not a mouse release, since the
