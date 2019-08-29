@@ -83,7 +83,7 @@ private:
     bool m_hovering = false;
     bool m_dragging = false;
 
-    QPoint m_lastMousePos;
+    QVector3D m_lastMousePos;
 
 private:
     static MouseArea3D *s_mouseGrab;

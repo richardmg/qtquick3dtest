@@ -169,7 +169,7 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
         }
 
         if (!m_dragging && m_hovering && buttonPressed) {
-            m_lastMousePos = me->pos();
+            m_lastMousePos = planePos;
             m_dragging = true;
             emit draggingChanged();
         } else if (m_dragging && !buttonPressed) {
@@ -180,12 +180,13 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
         s_mouseGrab = m_hovering || m_dragging ? this : nullptr;
 
         if (m_dragging) {
-            qreal deltaX = me->pos().x() - m_lastMousePos.x();
-            qreal deltaY = me->pos().y() - m_lastMousePos.y();
+            qreal deltaX = planePos.x() - m_lastMousePos.x();
+            qreal deltaY = planePos.y() - m_lastMousePos.y();
             qreal delta = qSqrt(qPow(deltaX, 2) + qPow(deltaY, 2));
-            m_lastMousePos = me->pos();
+            m_lastMousePos = planePos;
             emit dragMoved(delta, deltaX, deltaY);
         }
+
         break; }
     default:
         break;
