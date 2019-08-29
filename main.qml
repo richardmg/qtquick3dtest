@@ -114,7 +114,7 @@ ApplicationWindow {
                             position: Qt.vector3d(11, 0, 0)
                             onDragMoved: {
                                 var oldPos = nodeBeingManipulated.position
-                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + deltaX, oldPos.y, oldPos.z)
+                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + delta, oldPos.y, oldPos.z)
                             }
                         }
                         MousePoint3D {
@@ -123,7 +123,7 @@ ApplicationWindow {
                             position: Qt.vector3d(0, 11, 0)
                             onDragMoved: {
                                 var oldPos = nodeBeingManipulated.position
-                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y - deltaY, oldPos.z)
+                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y - delta, oldPos.z)
                             }
                         }
                         MousePoint3D {
@@ -132,7 +132,7 @@ ApplicationWindow {
                             position: Qt.vector3d(0, 0, 11)
                             onDragMoved: {
                                 var oldPos = nodeBeingManipulated.position
-                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y, oldPos.z + deltaX)
+                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y, oldPos.z + delta)
                             }
                         }
                     }

@@ -51,7 +51,7 @@ signals:
     void radiusChanged();
     void hoveringChanged();
     void draggingChanged();
-    void dragMoved(qreal deltaX, qreal deltaY);
+    void dragMoved(qreal delta, qreal deltaX, qreal deltaY);
 
 protected:
     void classBegin() override {}

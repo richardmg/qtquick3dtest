@@ -119,8 +119,9 @@ bool MousePoint3D::eventFilter(QObject *, QEvent *event)
         if (m_dragging) {
             qreal deltaX = me->pos().x() - m_lastMousePos.x();
             qreal deltaY = me->pos().y() - m_lastMousePos.y();
+            qreal delta = qSqrt(qPow(deltaX, 2) + qPow(deltaY, 2));
             m_lastMousePos = me->pos();
-            emit dragMoved(deltaX, deltaY);
+            emit dragMoved(delta, deltaX, deltaY);
         }
         break; }
     default:
