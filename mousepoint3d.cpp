@@ -80,14 +80,6 @@ bool MousePoint3D::eventFilter(QObject *, QEvent *event)
     auto const me = static_cast<QMouseEvent *>(event);
 
     switch (event->type()) {
-    case QEvent::MouseButtonPress: {
-        m_lastMousePos = me->pos();
-        bool dragging = m_hovering && me->button() == Qt::LeftButton;
-        if (!m_dragging == dragging) {
-            m_dragging = dragging;
-            emit draggingChanged();
-        }
-    break; }
     case QEvent::HoverMove: {
         QVector3D globalPosition = node ? node->mapToGlobal(m_position) : m_position;
         QVector3D viewPosition = m_view3D->mapFrom3DScene(globalPosition);
@@ -99,20 +91,25 @@ bool MousePoint3D::eventFilter(QObject *, QEvent *event)
             emit hoveringChanged();
         }
 
+        // The filter will detect a mouse press on the view, but not a mouse release, since the
+        // former is not accepted by the view, which means that the release will end up being
+        // sent elsewhere. So we need this extra logic inside HoverMove, rather than in
+        // MouseButtonRelease, which would be more elegant.
+        const bool buttonPressed = QGuiApplication::mouseButtons().testFlag(Qt::LeftButton);
+        if (!m_dragging && m_hovering && buttonPressed) {
+            m_lastMousePos = me->pos();
+            m_dragging = true;
+            emit draggingChanged();
+        } else if (m_dragging && !buttonPressed) {
+            m_dragging = false;
+            emit draggingChanged();
+        }
+
         if (m_dragging) {
-            // The filter will detect a mouse press on the view, but not a mouse release, since the
-            // former is not accepted by the view, which means that the release will end up being
-            // sent elsewhere. So we need this extra logic inside HoverMove, rather than in
-            // MouseButtonRelease, which would be more elegant.
-            if (!QGuiApplication::mouseButtons().testFlag(Qt::LeftButton)) {
-                m_dragging = false;
-                emit draggingChanged();
-            } else {
-                qreal deltaX = me->pos().x() - m_lastMousePos.x();
-                qreal deltaY = me->pos().y() - m_lastMousePos.y();
-                m_lastMousePos = me->pos();
-                emit dragMoved(deltaX, deltaY);
-            }
+            qreal deltaX = me->pos().x() - m_lastMousePos.x();
+            qreal deltaY = me->pos().y() - m_lastMousePos.y();
+            m_lastMousePos = me->pos();
+            emit dragMoved(deltaX, deltaY);
         }
         break; }
     default:

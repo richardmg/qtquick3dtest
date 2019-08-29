@@ -107,7 +107,8 @@ ApplicationWindow {
                     Arrows {
                         highlightX: mousePointGizmoX.hovering || mousePointGizmoX.dragging
                         highlightY: mousePointGizmoY.hovering || mousePointGizmoY.dragging
-                        MousePoint3D {
+                        highlightZ: mousePointGizmoZ.hovering || mousePointGizmoZ.dragging
+                         MousePoint3D {
                             id: mousePointGizmoX
                             view3D: overlayView
                             position: Qt.vector3d(11, 0, 0)
@@ -125,6 +126,15 @@ ApplicationWindow {
                                 nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y - deltaY, oldPos.z)
                             }
                         }
+                        MousePoint3D {
+                            id: mousePointGizmoZ
+                            view3D: overlayView
+                            position: Qt.vector3d(0, 0, 11)
+                            onDragMoved: {
+                                var oldPos = nodeBeingManipulated.position
+                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y, oldPos.z + deltaX)
+                            }
+                        }
                     }
                 }
             }
@@ -136,32 +146,10 @@ ApplicationWindow {
             anchors.right: parent.right
         }
 
-//        WasdController {
-//            controlledObject: worldView.camera
-//            mouseEnabled: !hoveringGizmoHeadX
-//        }
-
-//        DragHandler3D {
-//            id: dragHandlerGizmoX
-//            view3D: overlayView
-//            targetNode: targetGizmo
-//            localPosition: Qt.vector3d(80, 0, 0)
-//            onDragMoved: {
-//                var oldPos = nodeBeingManipulated.position
-//                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + deltaX, oldPos.y, oldPos.z)
-//            }
-//        }
-
-//        DragHandler3D {
-//            id: dragHandlerGizmoY
-//            view3D: overlayView
-//            targetNode: targetGizmo
-//            localPosition: Qt.vector3d(0, 80, 0)
-//            onDragMoved: {
-//                var oldPos = nodeBeingManipulated.position
-//                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y - deltaY, oldPos.z)
-//            }
-//        }
+        WasdController {
+            controlledObject: worldView.camera
+            acceptedButtons: Qt.RightButton
+        }
 
 //        overlay2d {
 //            id: overlayGizmo2D

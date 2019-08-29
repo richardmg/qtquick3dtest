@@ -29,6 +29,8 @@ class Q_QUICK3D_EXPORT MousePoint3D : public QObject, public QQmlParserStatus
     Q_PROPERTY(bool hovering READ hovering NOTIFY hoveringChanged)
     Q_PROPERTY(bool dragging READ dragging NOTIFY draggingChanged)
 
+    Q_INTERFACES(QQmlParserStatus)
+
 public:
     MousePoint3D(QQuick3DNode *parent = nullptr);
 
