@@ -72,7 +72,7 @@ ApplicationWindow {
                 Model {
                     id: initalPot
                     y: 200
-//                    rotation: Qt.vector3d(0, 90, 0)
+                    rotation: Qt.vector3d(0, 0, 45)
                     source: "meshes/Teapot.mesh"
                     scale: Qt.vector3d(20, 20, 20)
                     materials: DefaultMaterial {
@@ -110,18 +110,33 @@ ApplicationWindow {
                         highlightX: mousePointGizmoX.hovering || mousePointGizmoX.dragging
                         highlightY: mousePointGizmoY.hovering || mousePointGizmoY.dragging
                         highlightZ: mousePointGizmoZ.hovering || mousePointGizmoZ.dragging
-                        MouseArea3D {
+                        MouseArea3D { // Convert to node? With it's own mapping functions...
                             id: mousePointGizmoX
                             view3D: overlayView
                             x: 0
                             y: -1.5
                             width: 12
                             height: 3
+
+                            property var pointerStartPos
+                            property var targetStartPos
+
+                            onPressed: {
+                                var globalPos = arrows.mapToGlobalPosition(pointerPosition)
+                                pointerStartPos = nodeBeingManipulated.mapFromGlobalPosition(globalPos)
+//                                pointerStartPos = nodeBeingManipulated.mapFromNodePosition(arrows, pointerPosition)
+                                targetStartPos = nodeBeingManipulated.position
+                            }
+
                             onDragMoved: {
-                                var oldPos = nodeBeingManipulated.position
-                                var globalDeltaX = deltaX * arrows.globalScale.x
-                                var targetDeltaX = globalDeltaX / nodeBeingManipulated.parent.globalScale.x
-                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + targetDeltaX, oldPos.y, oldPos.z)
+                                var globalPos = arrows.mapToGlobalPosition(pointerPosition)
+                                var pointerNowPos = nodeBeingManipulated.mapFromGlobalPosition(globalPos)
+//                                var pointerNowPos = nodeBeingManipulated.mapFromNodePosition(arrows, pointerPosition)
+                                var distanceX = pointerNowPos.x - pointerStartPos.x
+                                var newPos = Qt.vector3d(distanceX, 0, 0)
+                                var newPosGlobal = nodeBeingManipulated.mapToGlobalPosition(newPos)
+                                var newPosInParent = nodeBeingManipulated.parent.mapFromGlobalPosition(newPosGlobal);
+                                nodeBeingManipulated.position = newPosInParent
                             }
                         }
                         MouseArea3D {
