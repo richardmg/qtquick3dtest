@@ -143,16 +143,16 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
 
         const QVector3D globalPosition = node ? node->mapToGlobal(QVector3D(0, 0, 0)) : QVector3D(0, 0, 0);
         const QVector3D globalPlaneNormal(0, 0, -1); // must transform to global, but not scaled
-        const QVector3D intersectPos = lineIntersectPlane(rayPos0, rayPos1, globalPosition, globalPlaneNormal);
-        const QVector3D planePos = node->mapFromGlobal(intersectPos);
+        const QVector3D intersectGlobalPos = lineIntersectPlane(rayPos0, rayPos1, globalPosition, globalPlaneNormal);
+        const QVector3D intersectLocalPos = node ? node->mapFromGlobal(intersectGlobalPos) : intersectGlobalPos;
 
         const bool mouseOnTopOfPoint =
-                planePos.x() >= m_x &&
-                planePos.x() <= m_x + m_width &&
-                planePos.y() >= m_y &&
-                planePos.y() <= m_y + m_height;
+                intersectLocalPos.x() >= m_x &&
+                intersectLocalPos.x() <= m_x + m_width &&
+                intersectLocalPos.y() >= m_y &&
+                intersectLocalPos.y() <= m_y + m_height;
 
-        qDebug() << planePos << mouseOnTopOfPoint;
+        qDebug() << intersectLocalPos << mouseOnTopOfPoint;
         const bool buttonPressed = QGuiApplication::mouseButtons().testFlag(Qt::LeftButton);
 
         // The filter will detect a mouse press on the view, but not a mouse release, since the
@@ -169,7 +169,9 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
         }
 
         if (!m_dragging && m_hovering && buttonPressed) {
-            m_lastMousePos = planePos;
+            // Store last mouse pos in global coordinates so it doesn't get affected
+            // by any transformation done to node in-between two mouse updates.
+            m_lastIntersectGlobalPos = intersectGlobalPos;
             m_dragging = true;
             emit draggingChanged();
         } else if (m_dragging && !buttonPressed) {
@@ -180,10 +182,11 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
         s_mouseGrab = m_hovering || m_dragging ? this : nullptr;
 
         if (m_dragging) {
-            qreal deltaX = planePos.x() - m_lastMousePos.x();
-            qreal deltaY = planePos.y() - m_lastMousePos.y();
+            const QVector3D lastLocalPos = node ? node->mapFromGlobal(m_lastIntersectGlobalPos) : m_lastIntersectGlobalPos;
+            qreal deltaX = intersectLocalPos.x() - lastLocalPos.x();
+            qreal deltaY = intersectLocalPos.y() - lastLocalPos.y();
             qreal delta = qSqrt(qPow(deltaX, 2) + qPow(deltaY, 2));
-            m_lastMousePos = planePos;
+            m_lastIntersectGlobalPos = intersectGlobalPos;
             emit dragMoved(delta, deltaX, deltaY);
         }
 

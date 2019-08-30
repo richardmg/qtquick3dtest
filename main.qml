@@ -53,7 +53,7 @@ ApplicationWindow {
                 Camera {
                     id: camera1
                     y: 200
-                    z: -500
+                    z: -300
                 }
 
                 Light {
