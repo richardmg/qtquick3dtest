@@ -72,6 +72,7 @@ ApplicationWindow {
                 Model {
                     id: initalPot
                     y: 200
+//                    rotation: Qt.vector3d(0, 90, 0)
                     source: "meshes/Teapot.mesh"
                     scale: Qt.vector3d(20, 20, 20)
                     materials: DefaultMaterial {
@@ -105,6 +106,7 @@ ApplicationWindow {
                     targetNode: window.nodeBeingManipulated
                     targetView: worldView
                     Arrows {
+                        id: arrows
                         highlightX: mousePointGizmoX.hovering || mousePointGizmoX.dragging
                         highlightY: mousePointGizmoY.hovering || mousePointGizmoY.dragging
                         highlightZ: mousePointGizmoZ.hovering || mousePointGizmoZ.dragging
@@ -117,27 +119,35 @@ ApplicationWindow {
                             height: 3
                             onDragMoved: {
                                 var oldPos = nodeBeingManipulated.position
-                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + deltaX, oldPos.y, oldPos.z)
+                                var globalDeltaX = deltaX * arrows.globalScale.x
+                                var targetDeltaX = globalDeltaX / nodeBeingManipulated.parent.globalScale.x
+                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + targetDeltaX, oldPos.y, oldPos.z)
                             }
                         }
-//                        MouseArea3D {
-//                            id: mousePointGizmoY
-//                            view3D: overlayView
-//                            position: Qt.vector3d(0, 11, 0)
-//                            onDragMoved: {
+                        MouseArea3D {
+                            id: mousePointGizmoY
+                            view3D: overlayView
+                            x: -0.5
+                            y: 0
+                            width: 3
+                            height: 12
+                            onDragMoved: {
+                                var oldPos = nodeBeingManipulated.position
+                                var globalDeltaY = deltaY * arrows.globalScale.y
+                                var targetDeltaY = globalDeltaY / nodeBeingManipulated.parent.globalScale.y
+                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y + targetDeltaY, oldPos.z)
+                            }
+                        }
+                        MouseArea3D {
+                            id: mousePointGizmoZ
+                            view3D: overlayView
+                            onDragMoved: {
 //                                var oldPos = nodeBeingManipulated.position
-//                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y - deltaY, oldPos.z)
-//                            }
-//                        }
-//                        MouseArea3D {
-//                            id: mousePointGizmoZ
-//                            view3D: overlayView
-//                            position: Qt.vector3d(0, 0, 11)
-//                            onDragMoved: {
-//                                var oldPos = nodeBeingManipulated.position
-//                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y, oldPos.z + deltaX)
-//                            }
-//                        }
+//                                var globalDeltaX = deltaX * arrows.globalScale.x
+//                                var targetDeltaX = globalDeltaX / nodeBeingManipulated.parent.globalScale.x
+//                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + targetDeltaX, oldPos.y, oldPos.z)
+                            }
+                        }
                     }
                 }
             }

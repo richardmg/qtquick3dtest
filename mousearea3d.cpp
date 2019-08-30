@@ -104,26 +104,28 @@ void MouseArea3D::componentComplete()
     m_view3D->installEventFilter(this);
 }
 
-QVector3D lineIntersectPlane(const QVector3D &linePos0, const QVector3D &linePos1, const QVector3D &planePos, const QVector3D &planeNormal)
+QVector3D lineIntersectPlane(const QVector3D &rayPos0, const QVector3D &rayPos1, const QVector3D &planePos, const QVector3D &planeNormal)
 {
-    QVector3D lineDirection = linePos1 - linePos0;
-    QVector3D linePos0RelativeToPlane = linePos0 - planePos;
+    QVector3D rayDirection = rayPos1 - rayPos0;
+    QVector3D rayPos0RelativeToPlane = rayPos0 - planePos;
 
-    float dotLineDirection = QVector3D::dotProduct(planeNormal, lineDirection);
-    float dotLinePos0 = -QVector3D::dotProduct(planeNormal, linePos0RelativeToPlane);
+    float dotRayDirection = QVector3D::dotProduct(planeNormal, rayDirection);
+    float dotRayPos0 = -QVector3D::dotProduct(planeNormal, rayPos0RelativeToPlane);
 
-    if (qFuzzyIsNull(dotLineDirection)) {
-        // Line is parallel to plane. If N == 0 it  means that the
-        // line lies in plane. Otherwise, no intersection.
+    if (qFuzzyIsNull(dotRayDirection)) {
+        // The ray is is parallel to the plane. Note that if dotLinePos0 == 0, it
+        // additionally means that the line lies in plane as well. But in our
+        // case, we signal that we cannot find a single intersection point.
         return QVector3D();
     }
 
     // If we treat the ray as a line segment (with a start and end), distanceFromLinePos0ToPlane
     // must be between 0 and 1. Otherwise the line will not be long enough to intersect the plane.
-    // But a ray only has a fixed start, but no end, so we don't check for that here. Note also
-    // that a line is different from a ray in that it has no fixed start either.
-    float distanceFromLinePos0ToPlane = dotLinePos0 / dotLineDirection;
-    return linePos0 + distanceFromLinePos0ToPlane * lineDirection;
+    // But since a ray only has a fixed start, but no end, so we don't check for that here.
+    // (Note: a third option would be a "line", which is different from a ray in that it has
+    // no fixed start or end).
+    float distanceFromRayPos0ToPlane = dotRayPos0 / dotRayDirection;
+    return rayPos0 + distanceFromRayPos0ToPlane * rayDirection;
 }
 
 bool MouseArea3D::eventFilter(QObject *, QEvent *event)
