@@ -95,7 +95,7 @@ void MouseArea3D::setHeight(qreal height)
 void MouseArea3D::componentComplete()
 {
     if (!m_view3D) {
-        qmlDebug(this) << "view3D missing!";
+        qmlDebug(this) << "property 'view3D' is not set!";
         return;
     }
     m_view3D->setAcceptedMouseButtons(Qt::LeftButton);
@@ -147,10 +147,10 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
         const QVector3D intersectLocalPos = node ? node->mapFromGlobal(intersectGlobalPos) : intersectGlobalPos;
 
         const bool mouseOnTopOfPoint =
-                intersectLocalPos.x() >= m_x &&
-                intersectLocalPos.x() <= m_x + m_width &&
-                intersectLocalPos.y() >= m_y &&
-                intersectLocalPos.y() <= m_y + m_height;
+                intersectLocalPos.x() >= float(m_x) &&
+                intersectLocalPos.x() <= float(m_x + m_width) &&
+                intersectLocalPos.y() >= float(m_y) &&
+                intersectLocalPos.y() <= float(m_y + m_height);
 
         qDebug() << intersectLocalPos << mouseOnTopOfPoint;
         const bool buttonPressed = QGuiApplication::mouseButtons().testFlag(Qt::LeftButton);
@@ -183,8 +183,8 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
 
         if (m_dragging) {
             const QVector3D lastLocalPos = node ? node->mapFromGlobal(m_lastIntersectGlobalPos) : m_lastIntersectGlobalPos;
-            qreal deltaX = intersectLocalPos.x() - lastLocalPos.x();
-            qreal deltaY = intersectLocalPos.y() - lastLocalPos.y();
+            qreal deltaX = qreal(intersectLocalPos.x() - lastLocalPos.x());
+            qreal deltaY = qreal(intersectLocalPos.y() - lastLocalPos.y());
             qreal delta = qSqrt(qPow(deltaX, 2) + qPow(deltaY, 2));
             m_lastIntersectGlobalPos = intersectGlobalPos;
             emit dragMoved(delta, deltaX, deltaY);
