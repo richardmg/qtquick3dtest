@@ -72,7 +72,7 @@ ApplicationWindow {
                 Model {
                     id: initalPot
                     y: 200
-                    rotation: Qt.vector3d(0, 0, 45)
+//                    rotation: Qt.vector3d(0, 0, 45)
                     source: "meshes/Teapot.mesh"
                     scale: Qt.vector3d(20, 20, 20)
                     materials: DefaultMaterial {
@@ -107,72 +107,17 @@ ApplicationWindow {
                     targetView: worldView
                     Arrows {
                         id: arrows
-                        highlightX: mousePointGizmoX.hovering || mousePointGizmoX.dragging
-                        highlightY: mousePointGizmoY.hovering || mousePointGizmoY.dragging
-                        highlightZ: mousePointGizmoZ.hovering || mousePointGizmoZ.dragging
-                        MouseArea3D { // Convert to node? With it's own mapping functions...
-                            id: mousePointGizmoX
-                            view3D: overlayView
-                            x: 0
-                            y: -1.5
-                            width: 12
-                            height: 3
-
-                            property var pointerStartPos
-                            property var targetStartPos
-
-                            onPressed: {
-                                var globalPos = arrows.mapToGlobalPosition(pointerPosition)
-                                pointerStartPos = nodeBeingManipulated.mapFromGlobalPosition(globalPos)
-//                                pointerStartPos = nodeBeingManipulated.mapFromNodePosition(arrows, pointerPosition)
-                                targetStartPos = nodeBeingManipulated.position
-                            }
-
-                            onDragMoved: {
-                                var globalPos = arrows.mapToGlobalPosition(pointerPosition)
-                                var pointerNowPos = nodeBeingManipulated.mapFromGlobalPosition(globalPos)
-//                                var pointerNowPos = nodeBeingManipulated.mapFromNodePosition(arrows, pointerPosition)
-                                var distanceX = pointerNowPos.x - pointerStartPos.x
-                                var newPos = Qt.vector3d(distanceX, 0, 0)
-                                var newPosGlobal = nodeBeingManipulated.mapToGlobalPosition(newPos)
-                                var newPosInParent = nodeBeingManipulated.parent.mapFromGlobalPosition(newPosGlobal);
-                                nodeBeingManipulated.position = newPosInParent
-                            }
-                        }
-                        MouseArea3D {
-                            id: mousePointGizmoY
-                            view3D: overlayView
-                            x: -0.5
-                            y: 0
-                            width: 3
-                            height: 12
-                            onDragMoved: {
-                                var oldPos = nodeBeingManipulated.position
-                                var globalDeltaY = deltaY * arrows.globalScale.y
-                                var targetDeltaY = globalDeltaY / nodeBeingManipulated.parent.globalScale.y
-                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x, oldPos.y + targetDeltaY, oldPos.z)
-                            }
-                        }
-                        MouseArea3D {
-                            id: mousePointGizmoZ
-                            view3D: overlayView
-                            onDragMoved: {
-//                                var oldPos = nodeBeingManipulated.position
-//                                var globalDeltaX = deltaX * arrows.globalScale.x
-//                                var targetDeltaX = globalDeltaX / nodeBeingManipulated.parent.globalScale.x
-//                                nodeBeingManipulated.position = Qt.vector3d(oldPos.x + targetDeltaX, oldPos.y, oldPos.z)
-                            }
-                        }
+                        highlightOnHover: true
                     }
                 }
             }
 
         }
 
-        CameraGizmo {
-            targetCamera: camera1
-            anchors.right: parent.right
-        }
+//        CameraGizmo {
+//            targetCamera: camera1
+//            anchors.right: parent.right
+//        }
 
         WasdController {
             controlledObject: worldView.camera

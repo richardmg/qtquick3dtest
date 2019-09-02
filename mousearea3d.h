@@ -66,7 +66,7 @@ signals:
     void draggingChanged();
     void pressed(const QVector3D &pointerPosition);
     void released(const QVector3D &pointerPosition);
-    void dragMoved(const QVector3D &pointerPosition);
+    void dragged(const QVector3D &pointerPosition);
 
 protected:
     void classBegin() override {}
@@ -84,6 +84,9 @@ private:
 
     bool m_hovering = false;
     bool m_dragging = false;
+
+    QVector3D rayIntersectsPlane(const QVector3D &rayPos0, const QVector3D &rayPos1, const QVector3D &planePos, const QVector3D &planeNormal) const;
+    QVector3D getMousePosInPlane(const QPointF mousePosInView) const;
 
 private:
     static MouseArea3D *s_mouseGrab;

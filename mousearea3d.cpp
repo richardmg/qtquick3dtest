@@ -104,15 +104,15 @@ void MouseArea3D::componentComplete()
     m_view3D->installEventFilter(this);
 }
 
-QVector3D lineIntersectPlane(const QVector3D &rayPos0, const QVector3D &rayPos1, const QVector3D &planePos, const QVector3D &planeNormal)
+QVector3D MouseArea3D::rayIntersectsPlane(const QVector3D &rayPos0, const QVector3D &rayPos1, const QVector3D &planePos, const QVector3D &planeNormal) const
 {
     QVector3D rayDirection = rayPos1 - rayPos0;
     QVector3D rayPos0RelativeToPlane = rayPos0 - planePos;
 
-    float dotRayDirection = QVector3D::dotProduct(planeNormal, rayDirection);
-    float dotRayPos0 = -QVector3D::dotProduct(planeNormal, rayPos0RelativeToPlane);
+    float dotPlaneRayDirection = QVector3D::dotProduct(planeNormal, rayDirection);
+    float dotPlaneRayPos0 = -QVector3D::dotProduct(planeNormal, rayPos0RelativeToPlane);
 
-    if (qFuzzyIsNull(dotRayDirection)) {
+    if (qFuzzyIsNull(dotPlaneRayDirection)) {
         // The ray is is parallel to the plane. Note that if dotLinePos0 == 0, it
         // additionally means that the line lies in plane as well. But in our
         // case, we signal that we cannot find a single intersection point.
@@ -121,38 +121,43 @@ QVector3D lineIntersectPlane(const QVector3D &rayPos0, const QVector3D &rayPos1,
 
     // If we treat the ray as a line segment (with a start and end), distanceFromLinePos0ToPlane
     // must be between 0 and 1. Otherwise the line will not be long enough to intersect the plane.
-    // But since a ray only has a fixed start, but no end, so we don't check for that here.
-    // (Note: a third option would be a "line", which is different from a ray in that it has
-    // no fixed start or end).
-    float distanceFromRayPos0ToPlane = dotRayPos0 / dotRayDirection;
+    // But since a ray only has a start, but no end, we don't check for that here. (Note: a third
+    // option would be a "line", which is different from a ray in that it has neither a start, nor an end).
+    float distanceFromRayPos0ToPlane = dotPlaneRayPos0 / dotPlaneRayDirection;
     return rayPos0 + distanceFromRayPos0ToPlane * rayDirection;
+}
+
+QVector3D MouseArea3D::getMousePosInPlane(const QPointF mousePosInView) const
+{
+    auto const node = static_cast<QQuick3DNode *>(parent());
+    Q_ASSERT(node);
+
+    const QVector3D mousePos1(float(mousePosInView.x()), float(mousePosInView.y()), 0);
+    const QVector3D mousePos2(float(mousePosInView.x()), float(mousePosInView.y()), 1);
+    const QVector3D rayPos0 = m_view3D->mapTo3DScene(mousePos1);
+    const QVector3D rayPos1 = m_view3D->mapTo3DScene(mousePos2);
+
+    const QVector3D globalPlanePosition = node->mapToGlobalPosition(QVector3D(0, 0, 0));
+    const QVector3D intersectGlobalPos = rayIntersectsPlane(rayPos0, rayPos1, globalPlanePosition, node->forward());
+
+    return node->mapFromGlobalPosition(intersectGlobalPos);
 }
 
 bool MouseArea3D::eventFilter(QObject *, QEvent *event)
 {
-    auto const node = static_cast<QQuick3DNode *>(parent());
-    auto const me = static_cast<QMouseEvent *>(event);
-
     switch (event->type()) {
     case QEvent::HoverMove: {
         if (s_mouseGrab && s_mouseGrab != this)
             break;
 
-        const QVector3D mousePos1(me->pos().x(), me->pos().y(), 0);
-        const QVector3D mousePos2(me->pos().x(), me->pos().y(), 1);
-        const QVector3D rayPos0 = m_view3D->mapTo3DScene(mousePos1);
-        const QVector3D rayPos1 = m_view3D->mapTo3DScene(mousePos2);
-
-        const QVector3D globalPlanePosition = node ? node->mapToGlobalPosition(QVector3D(0, 0, 0)) : QVector3D(0, 0, 0);
-        const QVector3D globalPlaneNormal = node ? node->mapToGlobalDirection(QVector3D(0, 0, -1)).normalized() : QVector3D(0, 0, -1);
-        const QVector3D intersectGlobalPos = lineIntersectPlane(rayPos0, rayPos1, globalPlanePosition, globalPlaneNormal);
-        const QVector3D intersectLocalPos = node ? node->mapFromGlobalPosition(intersectGlobalPos) : intersectGlobalPos;
+        auto const mouseEvent = static_cast<QMouseEvent *>(event);
+        const QVector3D mousePosInPlane = getMousePosInPlane(mouseEvent->pos());
 
         const bool mouseOnTopOfPoint =
-                intersectLocalPos.x() >= float(m_x) &&
-                intersectLocalPos.x() <= float(m_x + m_width) &&
-                intersectLocalPos.y() >= float(m_y) &&
-                intersectLocalPos.y() <= float(m_y + m_height);
+                mousePosInPlane.x() >= float(m_x) &&
+                mousePosInPlane.x() <= float(m_x + m_width) &&
+                mousePosInPlane.y() >= float(m_y) &&
+                mousePosInPlane.y() <= float(m_y + m_height);
 
         const bool buttonPressed = QGuiApplication::mouseButtons().testFlag(Qt::LeftButton);
 
@@ -173,18 +178,18 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
             // Store last mouse pos in global coordinates so it doesn't get affected
             // by any transformation done to node in-between two mouse updates.
             m_dragging = true;
-            emit pressed(intersectLocalPos);
+            emit pressed(mousePosInPlane);
             emit draggingChanged();
         } else if (m_dragging && !buttonPressed) {
             m_dragging = false;
-            emit released(intersectLocalPos);
+            emit released(mousePosInPlane);
             emit draggingChanged();
         }
 
         s_mouseGrab = m_hovering || m_dragging ? this : nullptr;
 
         if (m_dragging)
-            emit dragMoved(intersectLocalPos);
+            emit dragged(mousePosInPlane);
 
         break; }
     default:
