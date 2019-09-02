@@ -21,12 +21,14 @@ Model {
     }
 
     property var _pointerPosPressed
+    property var _targetStartPos
 
     function handlePressed(node, pointerPosition)
     {
         var maskedPosition = Qt.vector3d(pointerPosition.x, 0, 0)
         _pointerPosPressed = node.mapToGlobalPosition(maskedPosition)
-        pressed()
+        var gp = nodeBeingManipulated.globalPosition
+        _targetStartPos = Qt.vector3d(gp.x, gp.y, gp.z);
     }
 
     function handleDragged(node, pointerPosition)
@@ -37,7 +39,13 @@ Model {
                     globalPointerPos.x - _pointerPosPressed.x,
                     globalPointerPos.y - _pointerPosPressed.y,
                     globalPointerPos.z - _pointerPosPressed.z)
-        arrow.dragged(globalRelativeDistance)
+
+        var newGlobalPos = Qt.vector3d(
+                    _targetStartPos.x + globalRelativeDistance.x,
+                    _targetStartPos.y + globalRelativeDistance.y,
+                    _targetStartPos.z + globalRelativeDistance.z)
+        var posInParent = nodeBeingManipulated.parent.mapFromGlobalPosition(newGlobalPos)
+        nodeBeingManipulated.position = posInParent
     }
 
     Node {

@@ -54,6 +54,7 @@ ApplicationWindow {
                     id: camera1
                     y: 200
                     z: -300
+                    projectionMode: usePerspective ? Camera.Perspective : Camera.Orthographic
                 }
 
                 Light {
@@ -114,10 +115,10 @@ ApplicationWindow {
 
         }
 
-//        CameraGizmo {
-//            targetCamera: camera1
-//            anchors.right: parent.right
-//        }
+        CameraGizmo {
+            targetCamera: camera1
+            anchors.right: parent.right
+        }
 
         WasdController {
             controlledObject: worldView.camera
