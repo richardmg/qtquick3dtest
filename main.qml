@@ -138,5 +138,8 @@ ApplicationWindow {
 //            }
 //        }
 
+        // last commit: d3fb8b7d7e8a172782d3465658980824702e73e5
+        // url: ssh://richard@codereview.qt-project.org:29418/qt/qtquick3d
+
     }
 }
