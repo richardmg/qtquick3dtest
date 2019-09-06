@@ -3,6 +3,7 @@ import QtQuick3D 1.0
 
 Node {
     property bool highlightOnHover: false
+    objectName: "Arrows"
 
     scale: Qt.vector3d(7, 7, 7)
 

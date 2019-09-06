@@ -2,7 +2,6 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick3D 1.0
 import QtQuick3D.Helpers 1.0
-import QtQuick3D.Scripts 1.0
 
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.12
@@ -50,6 +49,7 @@ ApplicationWindow {
             camera: camera1
             scene: Node {
                 id: scene
+                objectName: "scene root"
                 Camera {
                     id: camera1
                     y: 200
@@ -72,6 +72,7 @@ ApplicationWindow {
 
                 Model {
                     id: initalPot
+                    objectName: "initalPot"
                     y: 200
 //                    rotation: Qt.vector3d(0, 0, 45)
                     source: "meshes/Teapot.mesh"
@@ -99,6 +100,7 @@ ApplicationWindow {
 
                 Overlay3D {
                     id: targetGizmo
+                    objectName: "Arrows overlay"
                     // Note: if you want orthograhic projections, you might as well
                     // use Overlay2D, since you achive the same. And in both cases, you
                     // cannot use the same overlay with two different cameras/views.
