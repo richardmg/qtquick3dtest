@@ -54,6 +54,8 @@ public slots:
     void setWidth(qreal width);
     void setHeight(qreal height);
 
+    Q_INVOKABLE QVector3D rayIntersectsPlane(const QVector3D &rayPos0, const QVector3D &rayPos1, const QVector3D &planePos, const QVector3D &planeNormal) const;
+
 signals:
     void view3DChanged();
 
@@ -85,7 +87,6 @@ private:
     bool m_hovering = false;
     bool m_dragging = false;
 
-    QVector3D rayIntersectsPlane(const QVector3D &rayPos0, const QVector3D &rayPos1, const QVector3D &planePos, const QVector3D &planeNormal) const;
     QVector3D getMousePosInPlane(const QPointF mousePosInView) const;
 
 private:
