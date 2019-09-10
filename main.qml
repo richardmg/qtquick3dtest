@@ -33,6 +33,11 @@ ApplicationWindow {
             ToolButton {
                 text: qsTr("+Cone")
             }
+            CheckBox {
+                id: scaleGizmoControl
+                text: qsTr("Fixed-size gizmo")
+                checked: true
+            }
             Item {
                 Layout.fillWidth: true
             }
@@ -101,18 +106,16 @@ ApplicationWindow {
                 Overlay3D {
                     id: targetGizmo
                     objectName: "Arrows overlay"
-                    // Note: if you want orthograhic projections, you might as well
-                    // use Overlay2D, since you achive the same. And in both cases, you
-                    // cannot use the same overlay with two different cameras/views.
-                    // The same is also true if you want perspective, and use auto
-                    // scaling or billboarding.
-                    targetNode: window.nodeBeingManipulated
-                    targetView: worldView
+                    overlayView: overlayView
+                    autoScale: scaleGizmoControl.checked
+                    position: window.nodeBeingManipulated.globalPosition
+                    rotation: window.nodeBeingManipulated.globalRotation
                     Arrows {
                         id: arrows
                         highlightOnHover: true
                     }
                 }
+
             }
 
         }

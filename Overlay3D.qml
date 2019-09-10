@@ -3,54 +3,40 @@ import QtQuick3D 1.0
 import MouseArea3D 0.1
 
 Node {
-    id: root
-    property Node targetNode
-    property View3D targetView
-    property bool trackPosition: true
-    property bool trackRotation: true
+    id: overlayNode
+
+    property View3D overlayView
     property bool autoScale: true
 
-    Connections {
-        target: targetNode
-        onGlobalTransformChanged: updateOverlay()
-    }
+    onGlobalTransformChanged: updateScale()
+    onAutoScaleChanged: updateScale()
 
     Connections {
-        target: targetView.camera
-        onGlobalTransformChanged: updateOverlay()
+        target: overlayView.camera
+        onGlobalTransformChanged: updateScale()
     }
 
-    function updateOverlay()
+    function updateScale()
     {
-        // todo: detect camera? or at least detect the given cameras projection
-        // orthographic
-//        if (trackPosition) {
-//            var viewportPos = targetView.camera.mapFromScene(targetNode.globalPosition)
-//            position = overlayCamera.mapToScene(viewportPos)
-//        }
-        if (trackPosition)
-            root.position = targetNode.globalPosition
-        if (trackRotation)
-            root.rotation = targetNode.globalRotation
+        if (!autoScale) {
+            overlayNode.scale = Qt.vector3d(1, 1, 1)
+        } else {
+            var posInView1 = overlayView.mapFrom3DScene(globalPosition)
+            var posInView2 = Qt.vector3d(posInView1.x + 100, posInView1.y, posInView1.z)
 
-        if (autoScale) {
-            var targetPos1 = targetNode.globalPosition
-            var targetViewPos = targetView.mapFrom3DScene(targetPos1)
-            var viewPos2 = Qt.vector3d(targetViewPos.x + 100, targetViewPos.y, targetViewPos.z)
+            var rayPos1 = overlayView.mapTo3DScene(Qt.vector3d(posInView2.x, posInView2.y, 0))
+            var rayPos2 = overlayView.mapTo3DScene(Qt.vector3d(posInView2.x, posInView2.y, 10))
 
-            var rayPos1 = targetView.mapTo3DScene(Qt.vector3d(viewPos2.x, viewPos2.y, 0))
-            var rayPos2 = targetView.mapTo3DScene(Qt.vector3d(viewPos2.x, viewPos2.y, 1))
+            var planeNormal = overlayView.camera.forward
+            var rayHitPos = helper.rayIntersectsPlane(rayPos1, rayPos2, globalPosition, planeNormal)
 
-            var planeNormal = targetView.camera.forward
-            var targetPos2 = helper.rayIntersectsPlane(rayPos1, rayPos2, targetPos1, planeNormal)
-
-            var dist = targetPos1.minus(targetPos2).length() / 100
-            root.scale = Qt.vector3d(dist, dist, dist)
+            var distance = globalPosition.minus(rayHitPos).length() / 100
+            overlayNode.scale = Qt.vector3d(distance, distance, distance)
         }
     }
 
     MouseArea3D {
         id: helper
-        view3D: targetView
+        view3D: overlayView
     }
 }
