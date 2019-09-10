@@ -16,34 +16,6 @@ ApplicationWindow {
 
     property Node nodeBeingManipulated: initalPot
 
-    property bool useGlobalGizmo: true
-    property bool usePerspective: true
-
-    header: ToolBar {
-        RowLayout {
-            anchors.fill: parent
-            ToolButton {
-                text: useGlobalGizmo ? qsTr("Global") : qsTr("Local")
-                onClicked: useGlobalGizmo = !useGlobalGizmo
-            }
-            ToolButton {
-                text: usePerspective ? qsTr("Perspective") : qsTr("Orthographic")
-                onClicked: usePerspective = !usePerspective
-            }
-            ToolButton {
-                text: qsTr("+Cone")
-            }
-            CheckBox {
-                id: scaleGizmoControl
-                text: qsTr("Fixed-size gizmo")
-                checked: true
-            }
-            Item {
-                Layout.fillWidth: true
-            }
-        }
-    }
-
     Sky {
         id: sceneBg
         anchors.fill: parent
@@ -59,7 +31,7 @@ ApplicationWindow {
                     id: camera1
                     y: 200
                     z: -300
-                    projectionMode: usePerspective ? Camera.Perspective : Camera.Orthographic
+                    projectionMode: perspectiveControl.checked ? Camera.Perspective : Camera.Orthographic
                 }
 
                 Light {
@@ -79,7 +51,7 @@ ApplicationWindow {
                     id: initalPot
                     objectName: "initalPot"
                     y: 200
-//                    rotation: Qt.vector3d(0, 0, 45)
+                    rotation: Qt.vector3d(0, 0, 45)
                     source: "meshes/Teapot.mesh"
                     scale: Qt.vector3d(20, 20, 20)
                     materials: DefaultMaterial {
@@ -98,7 +70,7 @@ ApplicationWindow {
 
                 Camera {
                     id: overlayCamera
-                    projectionMode: usePerspective ? Camera.Perspective : Camera.Orthographic
+                    projectionMode: perspectiveControl.checked ? Camera.Perspective : Camera.Orthographic
                     position: camera1.position
                     rotation: camera1.rotation
                 }
@@ -107,9 +79,9 @@ ApplicationWindow {
                     id: targetGizmo
                     objectName: "Arrows overlay"
                     overlayView: overlayView
-                    autoScale: scaleGizmoControl.checked
+                    autoScale: autoScaleControl.checked
                     position: window.nodeBeingManipulated.globalPosition
-                    rotation: window.nodeBeingManipulated.globalRotation
+                    rotation: globalControl.checked ? Qt.vector3d(0, 0, 0) : window.nodeBeingManipulated.globalRotation
                     Arrows {
                         id: arrows
                         highlightOnHover: true
@@ -126,6 +98,7 @@ ApplicationWindow {
         }
 
         WasdController {
+            id: wasd
             controlledObject: worldView.camera
             acceptedButtons: Qt.RightButton
         }
@@ -147,4 +120,65 @@ ApplicationWindow {
         // url: ssh://richard@codereview.qt-project.org:29418/qt/qtquick3d
 
     }
+
+    Item {
+        id: menu
+        anchors.fill: parent
+        visible: menuButton.checked
+        z: 100
+
+        RowLayout {
+            id: topRow
+            x: menuButton.width + 10
+            width: parent.width
+            height: childrenRect.height
+
+            ToolButton {
+                text: qsTr("Add pot")
+            }
+            ToolButton {
+                text: qsTr("Add pot")
+            }
+            Item {
+                Layout.fillWidth: true
+            }
+        }
+
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.topMargin: menuButton.height + 10
+
+            CheckBox {
+                id: globalControl
+                text: "Use global orientation"
+                checked: true
+            }
+            CheckBox {
+                id: perspectiveControl
+                text: "Use perspective transform"
+                checked: true
+            }
+            CheckBox {
+                id: autoScaleControl
+                text: qsTr("Use fixed-sized gizmo")
+                checked: true
+            }
+            Item {
+                Layout.fillHeight: true
+            }
+
+            TapHandler {
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                onTapped: menuButton.checked = false
+            }
+        }
+    }
+
+    ToolButton {
+        id: menuButton
+        text: "|||"
+        checkable: true
+        onCheckedChanged: wasd.forceActiveFocus()
+    }
+
 }
