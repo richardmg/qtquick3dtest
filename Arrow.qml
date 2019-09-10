@@ -44,6 +44,7 @@ Model {
                     _targetStartPos.x + globalRelativeDistance.x,
                     _targetStartPos.y + globalRelativeDistance.y,
                     _targetStartPos.z + globalRelativeDistance.z)
+
         var posInParent = nodeBeingManipulated.parent.mapFromGlobalPosition(newGlobalPos)
         nodeBeingManipulated.position = posInParent
     }

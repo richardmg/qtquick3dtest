@@ -116,14 +116,18 @@ QVector3D MouseArea3D::rayIntersectsPlane(const QVector3D &rayPos0, const QVecto
         // The ray is is parallel to the plane. Note that if dotLinePos0 == 0, it
         // additionally means that the line lies in plane as well. But in our
         // case, we signal that we cannot find a single intersection point.
-        return QVector3D();
+        return QVector3D(0, 0, -1);
     }
 
-    // If we treat the ray as a line segment (with a start and end), distanceFromLinePos0ToPlane
-    // must be between 0 and 1. Otherwise the line will not be long enough to intersect the plane.
-    // But since a ray only has a start, but no end, we don't check for that here. (Note: a third
-    // option would be a "line", which is different from a ray in that it has neither a start, nor an end).
+    // Since we treat the ray as a line segment (with a start) distanceFromLinePos0ToPlane
+    // must be above 0. If it was a line segment (with an end), it also need to be less than 1.
+    // (Note: a third option would be a "line", which is different from a ray or segment in that
+    // it has neither a start, nor an end). Then we wouldn't need to check distance at all. But
+    // that would also mean that the "ray" could intersect the plane behind the starting point, if
+    // the ray were directed away from the plane when looking forward.
     float distanceFromRayPos0ToPlane = dotPlaneRayPos0 / dotPlaneRayDirection;
+    if (distanceFromRayPos0ToPlane <= 0)
+        return QVector3D(0, 0, -1);
     return rayPos0 + distanceFromRayPos0ToPlane * rayDirection;
 }
 
@@ -140,6 +144,9 @@ QVector3D MouseArea3D::getMousePosInPlane(const QPointF mousePosInView) const
     const QVector3D globalPlanePosition = node->mapToGlobalPosition(QVector3D(0, 0, 0));
     const QVector3D intersectGlobalPos = rayIntersectsPlane(rayPos0, rayPos1, globalPlanePosition, node->forward());
 
+    if (qFuzzyCompare(intersectGlobalPos.z(), -1))
+        return intersectGlobalPos;
+
     return node->mapFromGlobalPosition(intersectGlobalPos);
 }
 
@@ -152,6 +159,8 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
 
         auto const mouseEvent = static_cast<QMouseEvent *>(event);
         const QVector3D mousePosInPlane = getMousePosInPlane(mouseEvent->pos());
+        if (qFuzzyCompare(mousePosInPlane.z(), -1))
+            break;
 
         const bool mouseOnTopOfPoint =
                 mousePosInPlane.x() >= float(m_x) &&
