@@ -6,9 +6,8 @@ Item {
     property Node targetNode
     property View3D targetView
 
-    // To make the gizmo appear to be a part of the 3D scene.
-    property real xOffsetInSceneUnits
-    property real yOffsetInSceneUnits
+    property real offsetX: 0
+    property real offsetY: 0
 
     Connections {
         target: targetNode
@@ -22,7 +21,9 @@ Item {
 
     function updateOverlay()
     {
-        var viewPos = targetView.mapFrom3DScene(targetNode.globalPosition)
+        var globalPos = targetNode.globalPosition
+        var globalPosWithOffset = Qt.vector3d(globalPos.x + offsetX, globalPos.y + offsetY, globalPos.z)
+        var viewPos = targetView.mapFrom3DScene(globalPosWithOffset)
         root.x = viewPos.x
         root.y = viewPos.y
     }

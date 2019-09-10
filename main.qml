@@ -31,6 +31,7 @@ ApplicationWindow {
                     id: camera1
                     y: 200
                     z: -300
+                    clipFar: 100000
                     projectionMode: perspectiveControl.checked ? Camera.Perspective : Camera.Orthographic
                 }
 
@@ -71,6 +72,7 @@ ApplicationWindow {
                 Camera {
                     id: overlayCamera
                     projectionMode: perspectiveControl.checked ? Camera.Perspective : Camera.Orthographic
+                    clipFar: camera1.clipFar
                     position: camera1.position
                     rotation: camera1.rotation
                 }
@@ -84,6 +86,7 @@ ApplicationWindow {
                     rotation: globalControl.checked ? Qt.vector3d(0, 0, 0) : window.nodeBeingManipulated.globalRotation
                     Arrows {
                         id: arrows
+                        scale: Qt.vector3d(5, 5, 5)
                         highlightOnHover: true
                     }
                 }
@@ -95,6 +98,9 @@ ApplicationWindow {
         CameraGizmo {
             targetCamera: camera1
             anchors.right: parent.right
+            width: 100
+            height: 100
+            scale: Qt.vector3d(10, 10, 10)
         }
 
         WasdController {
@@ -103,22 +109,27 @@ ApplicationWindow {
             acceptedButtons: Qt.RightButton
         }
 
-//        overlay2d {
-//            id: overlayGizmo2D
-//            targetNode: window.targetNode
-//            targetView: worldView
+        Overlay2D {
+            id: overlayGizmo2D
+            targetNode: nodeBeingManipulated
+            targetView: worldView
+            offsetY: 100
+            visible: showLabelsControl.checked
 
-//            Rectangle {
-//                color: "magenta"
-//                y: -100
-//                width: 50
-//                height: 50
-//            }
-//        }
-
-        // last commit: d3fb8b7d7e8a172782d3465658980824702e73e5
-        // url: ssh://richard@codereview.qt-project.org:29418/qt/qtquick3d
-
+            Rectangle {
+                color: "white"
+                x: -width / 2
+                y: -height
+                width: text.width + 4
+                height: text.height + 4
+                border.width: 1
+                Text {
+                    id: text
+                    text: nodeBeingManipulated.objectName
+                    anchors.centerIn: parent
+                }
+            }
+        }
     }
 
     Item {
@@ -171,6 +182,11 @@ ApplicationWindow {
             CheckBox {
                 id: autoScaleControl
                 text: qsTr("Use fixed-sized gizmo")
+                checked: true
+            }
+            CheckBox {
+                id: showLabelsControl
+                text: qsTr("Show labels")
                 checked: true
             }
             Item {
