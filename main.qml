@@ -127,6 +127,12 @@ ApplicationWindow {
         visible: menuButton.checked
         z: 100
 
+//        Rectangle {
+//            anchors.fill: parent
+//            color: "white"
+//            opacity: 0.7
+//        }
+
         RowLayout {
             id: topRow
             x: menuButton.width + 10
@@ -137,7 +143,11 @@ ApplicationWindow {
                 text: qsTr("Add pot")
             }
             ToolButton {
-                text: qsTr("Add pot")
+                text: qsTr("Reset camera")
+                onClicked: {
+                    camera1.position = Qt.vector3d(0, 200, -300)
+                    camera1.rotation = Qt.vector3d(0, 0, 0)
+                }
             }
             Item {
                 Layout.fillWidth: true
