@@ -32,7 +32,7 @@ View3D {
                     // views. And therefore they might not be completly in sync. Especially, the
                     // first emit does not seem to get throught...
                     //sceneGizmo.position = overlayCamera.mapToScene(Qt.vector3d(0.94, 0.08, 10))
-                    sceneGizmo.position = localCamera.mapToScene(Qt.vector3d(0.5, 0.5, 180))
+                    sceneGizmo.position = localCamera.mapFromViewport(Qt.vector3d(0.5, 0.5, 180))
                 }
             }
         }
