@@ -26,26 +26,26 @@ Model {
     function handlePressed(node, pointerPosition)
     {
         var maskedPosition = Qt.vector3d(pointerPosition.x, 0, 0)
-        _pointerPosPressed = node.mapToGlobalPosition(maskedPosition)
-        var gp = nodeBeingManipulated.globalPosition
-        _targetStartPos = Qt.vector3d(gp.x, gp.y, gp.z);
+        _pointerPosPressed = node.mapPositionToScene(maskedPosition)
+        var sp = nodeBeingManipulated.positionInScene
+        _targetStartPos = Qt.vector3d(sp.x, sp.y, sp.z);
     }
 
     function handleDragged(node, pointerPosition)
     {
         var maskedPosition = Qt.vector3d(pointerPosition.x, 0, 0)
-        var globalPointerPos = node.mapToGlobalPosition(maskedPosition)
-        var globalRelativeDistance = Qt.vector3d(
-                    globalPointerPos.x - _pointerPosPressed.x,
-                    globalPointerPos.y - _pointerPosPressed.y,
-                    globalPointerPos.z - _pointerPosPressed.z)
+        var scenePointerPos = node.mapPositionToScene(maskedPosition)
+        var sceneRelativeDistance = Qt.vector3d(
+                    scenePointerPos.x - _pointerPosPressed.x,
+                    scenePointerPos.y - _pointerPosPressed.y,
+                    scenePointerPos.z - _pointerPosPressed.z)
 
-        var newGlobalPos = Qt.vector3d(
-                    _targetStartPos.x + globalRelativeDistance.x,
-                    _targetStartPos.y + globalRelativeDistance.y,
-                    _targetStartPos.z + globalRelativeDistance.z)
+        var newScenePos = Qt.vector3d(
+                    _targetStartPos.x + sceneRelativeDistance.x,
+                    _targetStartPos.y + sceneRelativeDistance.y,
+                    _targetStartPos.z + sceneRelativeDistance.z)
 
-        var posInParent = nodeBeingManipulated.parent.mapFromGlobalPosition(newGlobalPos)
+        var posInParent = nodeBeingManipulated.parent.mapPositionFromScene(newScenePos)
         nodeBeingManipulated.position = posInParent
     }
 

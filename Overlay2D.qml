@@ -21,9 +21,9 @@ Item {
 
     function updateOverlay()
     {
-        var globalPos = targetNode.globalPosition
-        var globalPosWithOffset = Qt.vector3d(globalPos.x + offsetX, globalPos.y + offsetY, globalPos.z)
-        var viewPos = targetView.mapFrom3DScene(globalPosWithOffset)
+        var posInScene = targetNode.positionInScene
+        var posInSceneWithOffset = Qt.vector3d(posInScene.x + offsetX, posInScene.y + offsetY, posInScene.z)
+        var viewPos = targetView.mapFrom3DScene(posInSceneWithOffset)
         root.x = viewPos.x
         root.y = viewPos.y
     }

@@ -82,8 +82,8 @@ ApplicationWindow {
                     objectName: "Arrows overlay"
                     overlayView: overlayView
                     autoScale: autoScaleControl.checked
-                    position: window.nodeBeingManipulated.globalPosition
-                    rotation: globalControl.checked ? Qt.vector3d(0, 0, 0) : window.nodeBeingManipulated.globalRotation
+                    position: window.nodeBeingManipulated.positionInScene
+                    rotation: globalControl.checked ? Qt.vector3d(0, 0, 0) : window.nodeBeingManipulated.rotationInScene
                     Arrows {
                         id: arrows
                         scale: Qt.vector3d(5, 5, 5)
@@ -100,7 +100,6 @@ ApplicationWindow {
             anchors.right: parent.right
             width: 100
             height: 100
-            scale: Qt.vector3d(10, 10, 10)
         }
 
         WasdController {

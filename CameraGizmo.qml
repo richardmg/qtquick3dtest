@@ -19,8 +19,8 @@ View3D {
     scene: Node {
         Camera {
             id: localCamera
-            position: targetCamera.globalPosition
-            rotation: targetCamera.globalRotation
+            position: targetCamera.positionInScene
+            rotation: targetCamera.rotationInScene
         }
 
         Arrows {

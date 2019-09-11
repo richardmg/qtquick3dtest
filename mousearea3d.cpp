@@ -141,13 +141,13 @@ QVector3D MouseArea3D::getMousePosInPlane(const QPointF mousePosInView) const
     const QVector3D rayPos0 = m_view3D->mapTo3DScene(mousePos1);
     const QVector3D rayPos1 = m_view3D->mapTo3DScene(mousePos2);
 
-    const QVector3D globalPlanePosition = node->mapToGlobalPosition(QVector3D(0, 0, 0));
+    const QVector3D globalPlanePosition = node->mapPositionToScene(QVector3D(0, 0, 0));
     const QVector3D intersectGlobalPos = rayIntersectsPlane(rayPos0, rayPos1, globalPlanePosition, node->forward());
 
     if (qFuzzyCompare(intersectGlobalPos.z(), -1))
         return intersectGlobalPos;
 
-    return node->mapFromGlobalPosition(intersectGlobalPos);
+    return node->mapPositionFromScene(intersectGlobalPos);
 }
 
 bool MouseArea3D::eventFilter(QObject *, QEvent *event)
