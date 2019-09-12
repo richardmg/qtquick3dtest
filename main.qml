@@ -202,6 +202,7 @@ ApplicationWindow {
     ToolButton {
         id: menuButton
         text: "|||"
+        rotation: 90
         checkable: true
         onCheckedChanged: wasd.forceActiveFocus()
     }
