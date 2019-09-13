@@ -15,6 +15,7 @@ View3D {
     property Camera targetCamera
     implicitWidth: 50
     implicitHeight: 50
+    camera: localCamera
 
     scene: Node {
         Camera {
@@ -31,26 +32,43 @@ View3D {
                     // A problem here is that the target and this node belongs to two different
                     // views. And therefore they might not be completly in sync. Especially, the
                     // first emit does not seem to get throught...
-                    //sceneGizmo.position = overlayCamera.mapToScene(Qt.vector3d(0.94, 0.08, 10))
                     sceneGizmo.position = localCamera.mapFromViewport(Qt.vector3d(0.5, 0.5, 180))
+
+                    var xLabelScenePos = sceneGizmo.arrowX.mapPositionToScene(Qt.vector3d(0, 2, -12));
+                    var xLabelViewPos = root.mapFrom3DScene(xLabelScenePos)
+                    xLabel.x = xLabelViewPos.x - xLabel.width
+                    xLabel.y = xLabelViewPos.y - xLabel.height
+
+                    var yLabelScenePos = sceneGizmo.arrowY.mapPositionToScene(Qt.vector3d(4, 0, -9.5));
+                    var yLabelViewPos = root.mapFrom3DScene(yLabelScenePos)
+                    yLabel.x = yLabelViewPos.x - yLabel.width
+                    yLabel.y = yLabelViewPos.y - yLabel.height
+
+                    var zLabelScenePos = sceneGizmo.arrowZ.mapPositionToScene(Qt.vector3d(0, 2, -12));
+                    var zLabelViewPos = root.mapFrom3DScene(zLabelScenePos)
+                    zLabel.x = zLabelViewPos.x - zLabel.width
+                    zLabel.y = zLabelViewPos.y - zLabel.height
                 }
             }
         }
-
-// in-world-scene implementation
-//                Arrows {
-//                    id: sceneGizmo
-//                    scale: Qt.vector3d(0.1, 0.1, 0.1)
-//                    Connections {
-//                        target: overlayCamera
-//                        onGlobalTransformChanged: {
-//                            // A problem here is that the target and this node belongs to two different
-//                            // views. And therefore they might not be completly in sync. Especially, the
-//                            // first emit does not seem to get throught...
-//                            //sceneGizmo.position = overlayCamera.mapToScene(Qt.vector3d(0.94, 0.08, 10))
-//                            sceneGizmo.position = overlayCamera.mapToScene(Qt.vector3d(0.5, 0.5, 10))
-//                        }
-//                    }
-//                }
     }
+
+    Text {
+        id: xLabel
+        text: "x"
+        color: "red"
+    }
+
+    Text {
+        id: yLabel
+        text: "y"
+        color: "blue"
+    }
+
+    Text {
+        id: zLabel
+        text: "z"
+        color: "green"
+    }
+
 }

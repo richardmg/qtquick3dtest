@@ -5,7 +5,6 @@ import MouseArea3D 0.1
 Model {
     id: arrow
     rotationOrder: Node.XYZr
-    orientation: Node.RightHanded
     source: "meshes/Arrow.mesh"
 
     property alias color: material.emissiveColor
