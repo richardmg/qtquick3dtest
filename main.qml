@@ -77,20 +77,20 @@ ApplicationWindow {
                     rotation: camera1.rotation
                 }
 
-                Overlay3D {
+                Arrows {
                     id: targetGizmo
                     objectName: "Arrows overlay"
-                    overlayView: overlayView
-                    autoScale: autoScaleControl.checked
+                    scale: autoScale.getScale(Qt.vector3d(5, 5, 5))
+                    highlightOnHover: true
                     position: window.nodeBeingManipulated.positionInScene
                     rotation: globalControl.checked ? Qt.vector3d(0, 0, 0) : window.nodeBeingManipulated.rotationInScene
-                    Arrows {
-                        id: arrows
-                        scale: Qt.vector3d(5, 5, 5)
-                        highlightOnHover: true
-                    }
                 }
 
+                Overlay3D {
+                    id: autoScale
+                    overlayView: overlayView
+                    position: targetGizmo.positionInScene
+                }
             }
 
         }
@@ -98,8 +98,8 @@ ApplicationWindow {
         CameraGizmo {
             targetCamera: camera1
             anchors.right: parent.right
-            width: 100
-            height: 100
+//            width: 100
+//            height: 100
         }
 
         WasdController {
@@ -170,12 +170,12 @@ ApplicationWindow {
 
             CheckBox {
                 id: globalControl
-                text: "Use global orientation"
+                text: qsTr("Use global orientation")
                 checked: true
             }
             CheckBox {
                 id: perspectiveControl
-                text: "Use perspective transform"
+                text: qsTr("Use perspective transform")
                 checked: true
             }
             CheckBox {

@@ -7,9 +7,16 @@ Node {
 
     property View3D overlayView
     property bool autoScale: true
+    property Node target: parent
+    property real relativeScale: 1
 
     onGlobalTransformChanged: updateScale()
     onAutoScaleChanged: updateScale()
+
+    function getScale(baseScale)
+    {
+        return Qt.vector3d(baseScale.x * relativeScale, baseScale.y * relativeScale, baseScale.z * relativeScale)
+    }
 
     Connections {
         target: overlayView.camera
@@ -19,7 +26,7 @@ Node {
     function updateScale()
     {
         if (!autoScale) {
-            overlayNode.scale = Qt.vector3d(1, 1, 1)
+            target.scale = Qt.vector3d(1, 1, 1)
         } else {
             var posInView1 = overlayView.mapFrom3DScene(positionInScene)
             var posInView2 = Qt.vector3d(posInView1.x + 100, posInView1.y, posInView1.z)
@@ -30,8 +37,7 @@ Node {
             var planeNormal = overlayView.camera.forward
             var rayHitPos = helper.rayIntersectsPlane(rayPos1, rayPos2, positionInScene, planeNormal)
 
-            var distance = positionInScene.minus(rayHitPos).length() / 100
-            overlayNode.scale = Qt.vector3d(distance, distance, distance)
+            relativeScale = positionInScene.minus(rayHitPos).length() / 100
         }
     }
 

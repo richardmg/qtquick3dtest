@@ -13,8 +13,11 @@ import QtQuick3D 1.0
 View3D {
     id: root
     property Camera targetCamera
-    implicitWidth: 50
-    implicitHeight: 50
+//    implicitWidth: 50
+//    implicitHeight: 50
+    width: parent.width
+    height: parent.height
+    camera: localCamera
 
     scene: Node {
         Camera {
@@ -31,26 +34,23 @@ View3D {
                     // A problem here is that the target and this node belongs to two different
                     // views. And therefore they might not be completly in sync. Especially, the
                     // first emit does not seem to get throught...
-                    //sceneGizmo.position = overlayCamera.mapToScene(Qt.vector3d(0.94, 0.08, 10))
                     sceneGizmo.position = localCamera.mapFromViewport(Qt.vector3d(0.5, 0.5, 180))
+                    var p1 = sceneGizmo.arrowX.positionInScene
+                    var p2 = Qt.vector3d(p1.x, p1.y, 0)
+                    xLabel.x = root.mapFrom3DScene(p2).x
+                    xLabel.y = root.mapFrom3DScene(p2).y
+                    print(p2)
+//                    print(sceneGizmo.arrowX.positionInScene, root.mapFrom3DScene(sceneGizmo.arrowX.positionInScene))
                 }
             }
         }
-
-// in-world-scene implementation
-//                Arrows {
-//                    id: sceneGizmo
-//                    scale: Qt.vector3d(0.1, 0.1, 0.1)
-//                    Connections {
-//                        target: overlayCamera
-//                        onGlobalTransformChanged: {
-//                            // A problem here is that the target and this node belongs to two different
-//                            // views. And therefore they might not be completly in sync. Especially, the
-//                            // first emit does not seem to get throught...
-//                            //sceneGizmo.position = overlayCamera.mapToScene(Qt.vector3d(0.94, 0.08, 10))
-//                            sceneGizmo.position = overlayCamera.mapToScene(Qt.vector3d(0.5, 0.5, 10))
-//                        }
-//                    }
-//                }
     }
+
+    Text {
+        id: xLabel
+        text: "x"
+        color: "red"
+//        x: root.mapFrom3DScene(sceneGizmo.arrowX.positionInScene).x
+    }
+
 }

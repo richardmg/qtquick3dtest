@@ -7,6 +7,10 @@ Node {
 
     scale: Qt.vector3d(7, 7, 7)
 
+    property alias arrowX: arrowX
+    property alias arrowY: arrowY
+    property alias arrowZ: arrowZ
+
     Arrow {
         id: arrowX
         rotation: Qt.vector3d(0, 90, 0)
