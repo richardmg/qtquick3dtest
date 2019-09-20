@@ -25,8 +25,6 @@ ApplicationWindow {
             anchors.fill: parent
             camera: camera1
             scene: Node {
-                id: scene
-                objectName: "scene root"
                 Camera {
                     id: camera1
                     y: 200
@@ -43,18 +41,18 @@ ApplicationWindow {
                     brightness: 80
                 }
 
-                AxisHelper {
-                    enableXZGrid: true
-                    enableAxisLines: false
-                }
+//                AxisHelper {
+//                    enableXZGrid: true
+//                    enableAxisLines: false
+//                }
 
                 Model {
                     id: initalPot
                     objectName: "initalPot"
                     y: 200
-                    rotation: Qt.vector3d(0, 0, 45)
-                    source: "meshes/Teapot.mesh"
-                    scale: Qt.vector3d(20, 20, 20)
+//                    rotation: Qt.vector3d(0, 0, 45)
+                    source: "#Cube"
+//                    scale: Qt.vector3d(20, 20, 20)
                     materials: DefaultMaterial {
                         diffuseColor: "salmon"
                     }
@@ -62,40 +60,53 @@ ApplicationWindow {
             }
         }
 
-        View3D {
-            id: overlayView
-            anchors.fill: parent
-            camera: overlayCamera
-            scene: Node {
-                id: overlayScene
-
-                Camera {
-                    id: overlayCamera
-                    projectionMode: perspectiveControl.checked ? Camera.Perspective : Camera.Orthographic
-                    clipFar: camera1.clipFar
-                    position: camera1.position
-                    rotation: camera1.rotation
-                }
-
-                Arrows {
-                    id: targetGizmo
-                    objectName: "Arrows overlay"
-                    scale: autoScale.getScale(Qt.vector3d(5, 5, 5))
-                    highlightOnHover: true
-                    position: window.nodeBeingManipulated.positionInScene
-                    rotation: globalControl.checked ? Qt.vector3d(0, 0, 0) : window.nodeBeingManipulated.rotationInScene
-                }
-
-                Overlay3D {
-                    id: autoScale
-                    overlayView: overlayView
-                    position: targetGizmo.positionInScene
-                }
+        TapHandler {
+            onTapped: {
+                print("PICK FROM WORLDVIEW")
+                var pickResult = worldView.pick(point.position.x, point.position.y)
+                print(pickResult.objectHit)
+                print("PICK FROM GIZMO VIEW")
+                var pickResult2 = gizmo.pick(point.position.x, point.position.y)
+                print(pickResult2.objectHit)
             }
-
         }
 
+//        View3D {
+//            id: overlayView
+////            anchors.fill: parent
+//            camera: overlayCamera
+//            visible: false
+////            scene: Node {
+
+//                Camera {
+//                    id: overlayCamera
+//                    projectionMode: perspectiveControl.checked ? Camera.Perspective : Camera.Orthographic
+//                    clipFar: camera1.clipFar
+//                    position: camera1.position
+//                    rotation: camera1.rotation
+//                }
+
+//                Arrows {
+//                    id: targetGizmo
+//                    objectName: "Arrows overlay"
+//                    scale: autoScale.getScale(Qt.vector3d(5, 5, 5))
+//                    highlightOnHover: true
+//                    position: window.nodeBeingManipulated.positionInScene
+//                    rotation: globalControl.checked ? Qt.vector3d(0, 0, 0) : window.nodeBeingManipulated.rotationInScene
+//                }
+
+////                Overlay3D {
+////                    id: autoScale
+////                    overlayView: overlayView
+////                    position: targetGizmo.positionInScene
+////                }
+////            }
+
+//        }
+
+
         CameraGizmo {
+            id: gizmo
             targetCamera: camera1
             anchors.right: parent.right
 //            width: 100

@@ -22,27 +22,12 @@ View3D {
     scene: Node {
         Camera {
             id: localCamera
-            position: targetCamera.positionInScene
-            rotation: targetCamera.rotationInScene
+//            position: targetCamera.positionInScene
+//            rotation: targetCamera.rotationInScene
         }
 
         Arrows {
             id: sceneGizmo
-            Connections {
-                target: localCamera
-                onGlobalTransformChanged: {
-                    // A problem here is that the target and this node belongs to two different
-                    // views. And therefore they might not be completly in sync. Especially, the
-                    // first emit does not seem to get throught...
-                    sceneGizmo.position = localCamera.mapFromViewport(Qt.vector3d(0.5, 0.5, 180))
-                    var p1 = sceneGizmo.arrowX.positionInScene
-                    var p2 = Qt.vector3d(p1.x, p1.y, 0)
-                    xLabel.x = root.mapFrom3DScene(p2).x
-                    xLabel.y = root.mapFrom3DScene(p2).y
-                    print(p2)
-//                    print(sceneGizmo.arrowX.positionInScene, root.mapFrom3DScene(sceneGizmo.arrowX.positionInScene))
-                }
-            }
         }
     }
 
