@@ -16,6 +16,69 @@ ApplicationWindow {
 
     property Node nodeBeingManipulated: initalPot
 
+    Node {
+        id: mainScene
+
+        Camera {
+            id: camera1
+            y: 200
+            z: -300
+            clipFar: 100000
+            projectionMode: perspectiveControl.checked ? Camera.Perspective : Camera.Orthographic
+        }
+
+        Light {
+            id: light
+            y: 400
+            diffuseColor: Qt.rgba(0.4, 0.5, 0.0, 1.0)
+            rotation: Qt.vector3d(60, 0, 0)
+            brightness: 80
+        }
+
+        AxisHelper {
+            enableXZGrid: true
+            enableAxisLines: false
+        }
+
+        Model {
+            id: initalPot
+            objectName: "initalPot"
+            y: 200
+            rotation: Qt.vector3d(0, 0, 45)
+            source: "meshes/Teapot.mesh"
+            scale: Qt.vector3d(20, 20, 20)
+            materials: DefaultMaterial {
+                diffuseColor: "salmon"
+            }
+        }
+    }
+
+    Node {
+        id: overlayScene
+
+        Camera {
+            id: overlayCamera
+            projectionMode: perspectiveControl.checked ? Camera.Perspective : Camera.Orthographic
+            clipFar: camera1.clipFar
+            position: camera1.position
+            rotation: camera1.rotation
+        }
+
+        Arrows {
+            id: targetGizmo
+            scale: autoScaleControl.checked ? autoScale.getScale(Qt.vector3d(5, 5, 5)) : Qt.vector3d(5, 5, 5)
+            highlightOnHover: true
+            position: window.nodeBeingManipulated.positionInScene
+            rotation: globalControl.checked ? Qt.vector3d(0, 0, 0) : window.nodeBeingManipulated.rotationInScene
+        }
+
+        Overlay3D {
+            id: autoScale
+            overlayView: overlayView
+            position: targetGizmo.positionInScene
+        }
+    }
+
     Sky {
         id: sceneBg
         anchors.fill: parent
@@ -24,75 +87,14 @@ ApplicationWindow {
             id: worldView
             anchors.fill: parent
             camera: camera1
-            scene: Node {
-                id: scene
-                objectName: "scene root"
-                Camera {
-                    id: camera1
-                    y: 200
-                    z: -300
-                    clipFar: 100000
-                    projectionMode: perspectiveControl.checked ? Camera.Perspective : Camera.Orthographic
-                }
-
-                Light {
-                    id: light
-                    y: 400
-                    diffuseColor: Qt.rgba(0.4, 0.5, 0.0, 1.0)
-                    rotation: Qt.vector3d(60, 0, 0)
-                    brightness: 80
-                }
-
-                AxisHelper {
-                    enableXZGrid: true
-                    enableAxisLines: false
-                }
-
-                Model {
-                    id: initalPot
-                    objectName: "initalPot"
-                    y: 200
-                    rotation: Qt.vector3d(0, 0, 45)
-                    source: "meshes/Teapot.mesh"
-                    scale: Qt.vector3d(20, 20, 20)
-                    materials: DefaultMaterial {
-                        diffuseColor: "salmon"
-                    }
-                }
-            }
+            scene: mainScene
         }
 
         View3D {
             id: overlayView
             anchors.fill: parent
             camera: overlayCamera
-            scene: Node {
-                id: overlayScene
-
-                Camera {
-                    id: overlayCamera
-                    projectionMode: perspectiveControl.checked ? Camera.Perspective : Camera.Orthographic
-                    clipFar: camera1.clipFar
-                    position: camera1.position
-                    rotation: camera1.rotation
-                }
-
-                Arrows {
-                    id: targetGizmo
-                    objectName: "Arrows overlay"
-                    scale: autoScale.getScale(Qt.vector3d(5, 5, 5))
-                    highlightOnHover: true
-                    position: window.nodeBeingManipulated.positionInScene
-                    rotation: globalControl.checked ? Qt.vector3d(0, 0, 0) : window.nodeBeingManipulated.rotationInScene
-                }
-
-                Overlay3D {
-                    id: autoScale
-                    overlayView: overlayView
-                    position: targetGizmo.positionInScene
-                }
-            }
-
+            scene: overlayScene
         }
 
         CameraGizmo {
@@ -100,12 +102,6 @@ ApplicationWindow {
             anchors.right: parent.right
             width: 100
             height: 100
-        }
-
-        WasdController {
-            id: wasd
-            controlledObject: worldView.camera
-            acceptedButtons: Qt.RightButton
         }
 
         Overlay2D {
@@ -129,19 +125,19 @@ ApplicationWindow {
                 }
             }
         }
+
+        WasdController {
+            id: wasd
+            controlledObject: worldView.camera
+            acceptedButtons: Qt.RightButton
+        }
     }
 
     Item {
-        id: menu
+        id: burgerMenu
         anchors.fill: parent
         visible: menuButton.checked
         z: 100
-
-//        Rectangle {
-//            anchors.fill: parent
-//            color: "white"
-//            opacity: 0.7
-//        }
 
         RowLayout {
             id: topRow
@@ -152,6 +148,7 @@ ApplicationWindow {
             ToolButton {
                 text: qsTr("Add pot")
             }
+
             ToolButton {
                 text: qsTr("Reset camera")
                 onClicked: {
@@ -159,6 +156,7 @@ ApplicationWindow {
                     camera1.rotation = Qt.vector3d(0, 0, 0)
                 }
             }
+
             Item {
                 Layout.fillWidth: true
             }
