@@ -53,7 +53,7 @@ Model {
          // Create two perpendicual planes (creating a cross) that aligns with arrow
         rotation: Qt.vector3d(0, 90, 0)
 
-        MouseArea3D { // Convert to node? With it's own mapping functions...
+        MouseArea3D {
             id: mouseAreaYZ
             view3D: overlayView
             x: 0

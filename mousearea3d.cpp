@@ -122,8 +122,8 @@ QVector3D MouseArea3D::rayIntersectsPlane(const QVector3D &rayPos0, const QVecto
     // Since we treat the ray as a line segment (with a start) distanceFromLinePos0ToPlane
     // must be above 0. If it was a line segment (with an end), it also need to be less than 1.
     // (Note: a third option would be a "line", which is different from a ray or segment in that
-    // it has neither a start, nor an end). Then we wouldn't need to check distance at all. But
-    // that would also mean that the "ray" could intersect the plane behind the starting point, if
+    // it has neither a start, nor an end). Then we wouldn't need to check the distance at all. But
+    // that would also mean that the "ray" could intersect the plane behind the camera, if
     // the ray were directed away from the plane when looking forward.
     float distanceFromRayPos0ToPlane = dotPlaneRayPos0 / dotPlaneRayDirection;
     if (distanceFromRayPos0ToPlane <= 0)
@@ -162,7 +162,7 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
         if (qFuzzyCompare(mousePosInPlane.z(), -1))
             break;
 
-        const bool mouseOnTopOfPoint =
+        const bool mouseOnTopOfMouseArea =
                 mousePosInPlane.x() >= float(m_x) &&
                 mousePosInPlane.x() <= float(m_x + m_width) &&
                 mousePosInPlane.y() >= float(m_y) &&
@@ -173,13 +173,10 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
         // The filter will detect a mouse press on the view, but not a mouse release, since the
         // former is not accepted by the view, which means that the release will end up being
         // sent elsewhere. So we need this extra logic inside HoverMove, rather than in
-        // MouseButtonRelease, which would be more elegant.
+        // MouseButtonRelease, which would otherwise be more elegant.
 
-        if (!mouseOnTopOfPoint && m_hovering) {
-            m_hovering = false;
-            emit hoveringChanged();
-        } else if (mouseOnTopOfPoint && !s_mouseGrab) {
-            m_hovering = true;
+        if (m_hovering != mouseOnTopOfMouseArea) {
+            m_hovering = mouseOnTopOfMouseArea;
             emit hoveringChanged();
         }
 
