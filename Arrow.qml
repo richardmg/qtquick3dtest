@@ -13,14 +13,14 @@ Model {
     signal pressed()
     signal dragged(var distance)
 
+    property var _pointerPosPressed
+    property var _targetStartPos
+
     materials: DefaultMaterial {
         id: material
         emissiveColor: mouseAreaFront.hovering ? "white" : Qt.rgba(1.0, 0.0, 0.0, 1.0)
         lighting: DefaultMaterial.NoLighting
     }
-
-    property var _pointerPosPressed
-    property var _targetStartPos
 
     function handlePressed(node, pointerPosition)
     {
@@ -48,39 +48,29 @@ Model {
         nodeBeingManipulated.position = posInParent
     }
 
-    Node {
-        id: nodeYZ
-         // Create two perpendicual planes (creating a cross) that aligns with arrow
+    MouseArea3D {
+        id: mouseAreaYZ
+        view3D: overlayView
+        x: 0
+        y: -1.5
+        width: 12
+        height: 3
         rotation: Qt.vector3d(0, 90, 0)
-
-        MouseArea3D {
-            id: mouseAreaYZ
-            view3D: overlayView
-            x: 0
-            y: -1.5
-            width: 12
-            height: 3
-            onPressed: arrow.handlePressed(nodeYZ, pointerPosition)
-            onDragged: arrow.handleDragged(nodeYZ, pointerPosition)
-        }
-
-        Node {
-            id: nodeXZ
-            rotation: Qt.vector3d(90, 0, 0)
-
-            MouseArea3D {
-                id: mouseAreaXZ
-                view3D: overlayView
-                x: 0
-                y: -1.5
-                width: 12
-                height: 3
-                onPressed: arrow.handlePressed(nodeXZ, pointerPosition)
-                onDragged: arrow.handleDragged(nodeXZ, pointerPosition)
-            }
-        }
+        onPressed: arrow.handlePressed(mouseAreaYZ, pointerPosition)
+        onDragged: arrow.handleDragged(mouseAreaYZ, pointerPosition)
     }
 
+    MouseArea3D {
+        id: mouseAreaXZ
+        view3D: overlayView
+        x: 0
+        y: -1.5
+        width: 12
+        height: 3
+        rotation: Qt.vector3d(90, 90, 0)
+        onPressed: arrow.handlePressed(mouseAreaXZ, pointerPosition)
+        onDragged: arrow.handleDragged(mouseAreaXZ, pointerPosition)
+    }
 
 }
 

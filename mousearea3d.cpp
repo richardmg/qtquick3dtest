@@ -8,7 +8,7 @@ QT_BEGIN_NAMESPACE
 MouseArea3D *MouseArea3D::s_mouseGrab = nullptr;
 
 MouseArea3D::MouseArea3D(QQuick3DNode *parent)
-    : QObject(parent)
+    : QQuick3DNode(parent)
 {
 }
 
@@ -133,21 +133,18 @@ QVector3D MouseArea3D::rayIntersectsPlane(const QVector3D &rayPos0, const QVecto
 
 QVector3D MouseArea3D::getMousePosInPlane(const QPointF mousePosInView) const
 {
-    auto const node = static_cast<QQuick3DNode *>(parent());
-    Q_ASSERT(node);
-
     const QVector3D mousePos1(float(mousePosInView.x()), float(mousePosInView.y()), 0);
     const QVector3D mousePos2(float(mousePosInView.x()), float(mousePosInView.y()), 1);
     const QVector3D rayPos0 = m_view3D->mapTo3DScene(mousePos1);
     const QVector3D rayPos1 = m_view3D->mapTo3DScene(mousePos2);
 
-    const QVector3D globalPlanePosition = node->mapPositionToScene(QVector3D(0, 0, 0));
-    const QVector3D intersectGlobalPos = rayIntersectsPlane(rayPos0, rayPos1, globalPlanePosition, node->forward());
+    const QVector3D globalPlanePosition = mapPositionToScene(QVector3D(0, 0, 0));
+    const QVector3D intersectGlobalPos = rayIntersectsPlane(rayPos0, rayPos1, globalPlanePosition, forward());
 
     if (qFuzzyCompare(intersectGlobalPos.z(), -1))
         return intersectGlobalPos;
 
-    return node->mapPositionFromScene(intersectGlobalPos);
+    return mapPositionFromScene(intersectGlobalPos);
 }
 
 bool MouseArea3D::eventFilter(QObject *, QEvent *event)

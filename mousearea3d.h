@@ -20,7 +20,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class Q_QUICK3D_EXPORT MouseArea3D : public QObject, public QQmlParserStatus
+class Q_QUICK3D_EXPORT MouseArea3D : public QQuick3DNode
 {
     Q_OBJECT
     Q_PROPERTY(QQuick3DViewport *view3D READ view3D WRITE setView3D NOTIFY view3DChanged)
