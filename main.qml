@@ -68,6 +68,7 @@ ApplicationWindow {
             id: targetGizmo
             scale: autoScaleControl.checked ? autoScale.getScale(Qt.vector3d(5, 5, 5)) : Qt.vector3d(5, 5, 5)
             highlightOnHover: true
+            draggable: true
             position: window.nodeBeingManipulated.positionInScene
             rotation: globalControl.checked ? Qt.vector3d(0, 0, 0) : window.nodeBeingManipulated.rotationInScene
         }

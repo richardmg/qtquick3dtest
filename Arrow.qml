@@ -8,8 +8,9 @@ Model {
     source: "meshes/Arrow.mesh"
 
     property alias color: material.emissiveColor
+    property bool draggable: false
 
-    property bool hovering: mouseAreaYZ.hovering || mouseAreaXZ.hovering
+    readonly property bool hovering: mouseAreaYZ.hovering || mouseAreaXZ.hovering
     signal pressed()
     signal dragged(var distance)
 
@@ -24,6 +25,9 @@ Model {
 
     function handlePressed(node, pointerPosition)
     {
+        if (!draggable)
+            return;
+
         var maskedPosition = Qt.vector3d(pointerPosition.x, 0, 0)
         _pointerPosPressed = node.mapPositionToScene(maskedPosition)
         var sp = nodeBeingManipulated.positionInScene
@@ -32,6 +36,9 @@ Model {
 
     function handleDragged(node, pointerPosition)
     {
+        if (!draggable)
+            return;
+
         var maskedPosition = Qt.vector3d(pointerPosition.x, 0, 0)
         var scenePointerPos = node.mapPositionToScene(maskedPosition)
         var sceneRelativeDistance = Qt.vector3d(
@@ -56,6 +63,7 @@ Model {
         width: 12
         height: 3
         rotation: Qt.vector3d(0, 90, 0)
+        grabsMouse: draggable
         onPressed: arrow.handlePressed(mouseAreaYZ, pointerPosition)
         onDragged: arrow.handleDragged(mouseAreaYZ, pointerPosition)
     }
@@ -68,6 +76,7 @@ Model {
         width: 12
         height: 3
         rotation: Qt.vector3d(90, 90, 0)
+        grabsMouse: draggable
         onPressed: arrow.handlePressed(mouseAreaXZ, pointerPosition)
         onDragged: arrow.handleDragged(mouseAreaXZ, pointerPosition)
     }

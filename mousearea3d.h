@@ -24,6 +24,7 @@ class Q_QUICK3D_EXPORT MouseArea3D : public QQuick3DNode
 {
     Q_OBJECT
     Q_PROPERTY(QQuick3DViewport *view3D READ view3D WRITE setView3D NOTIFY view3DChanged)
+    Q_PROPERTY(bool grabsMouse READ grabsMouse WRITE setGrabsMouse NOTIFY grabsMouseChanged)
     Q_PROPERTY(qreal x READ x WRITE setX NOTIFY xChanged)
     Q_PROPERTY(qreal y READ y WRITE setY NOTIFY yChanged)
     Q_PROPERTY(qreal width READ width WRITE setWidth NOTIFY widthChanged)
@@ -45,9 +46,11 @@ public:
 
     bool hovering() const;
     bool dragging() const;
+    bool grabsMouse() const;
 
 public slots:
     void setView3D(QQuick3DViewport *view3D);
+    void setGrabsMouse(bool grabsMouse);
 
     void setX(qreal x);
     void setY(qreal y);
@@ -69,6 +72,7 @@ signals:
     void pressed(const QVector3D &pointerPosition);
     void released(const QVector3D &pointerPosition);
     void dragged(const QVector3D &pointerPosition);
+    void grabsMouseChanged(bool grabsMouse);
 
 protected:
     void classBegin() override {}
@@ -91,6 +95,7 @@ private:
 
 private:
     static MouseArea3D *s_mouseGrab;
+    bool m_grabsMouse;
 };
 
 QT_END_NAMESPACE

@@ -27,6 +27,11 @@ bool MouseArea3D::dragging() const
     return m_dragging;
 }
 
+bool MouseArea3D::grabsMouse() const
+{
+    return m_grabsMouse;
+}
+
 qreal MouseArea3D::x() const
 {
     return m_x;
@@ -54,6 +59,15 @@ void MouseArea3D::setView3D(QQuick3DViewport *view3D)
 
     m_view3D = view3D;
     emit view3DChanged();
+}
+
+void MouseArea3D::setGrabsMouse(bool grabsMouse)
+{
+    if (m_grabsMouse == grabsMouse)
+        return;
+
+    m_grabsMouse = grabsMouse;
+    emit grabsMouseChanged(grabsMouse);
 }
 
 void MouseArea3D::setX(qreal x)
@@ -151,7 +165,7 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
 {
     switch (event->type()) {
     case QEvent::HoverMove: {
-        if (s_mouseGrab && s_mouseGrab != this)
+        if (m_grabsMouse && s_mouseGrab && s_mouseGrab != this)
             break;
 
         auto const mouseEvent = static_cast<QMouseEvent *>(event);
@@ -189,7 +203,8 @@ bool MouseArea3D::eventFilter(QObject *, QEvent *event)
             emit draggingChanged();
         }
 
-        s_mouseGrab = m_hovering || m_dragging ? this : nullptr;
+        if (m_grabsMouse)
+            s_mouseGrab = m_hovering || m_dragging ? this : nullptr;
 
         if (m_dragging)
             emit dragged(mousePosInPlane);
