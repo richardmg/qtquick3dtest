@@ -142,74 +142,55 @@ ApplicationWindow {
         }
     }
 
-    ToolButton {
-        id: menuButton
-        text: "|||"
-        rotation: 90
-        checkable: true
-        onCheckedChanged: wasd.forceActiveFocus()
-    }
-
     Item {
         id: menu
         anchors.fill: parent
-        visible: menuButton.checked
-        z: 100
-
-        RowLayout {
-            id: topRow
-            x: menuButton.width + 10
-            width: parent.width
-            height: childrenRect.height
-
-            ToolButton {
-                text: qsTr("Add pot")
-            }
-
-            ToolButton {
-                text: qsTr("Reset camera")
-                onClicked: {
-                    camera1.position = Qt.vector3d(0, 200, -300)
-                    camera1.rotation = Qt.vector3d(0, 0, 0)
-                }
-            }
-
-            Item {
-                Layout.fillWidth: true
-            }
-        }
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.topMargin: menuButton.height + 10
 
             CheckBox {
                 id: globalControl
-                text: qsTr("Use global orientation")
                 checked: true
+                onCheckedChanged: wasd.forceActiveFocus()
+                Text {
+                    anchors.left: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: qsTr("Use global orientation")
+                }
             }
             CheckBox {
                 id: perspectiveControl
-                text: qsTr("Use perspective transform")
                 checked: true
+                onCheckedChanged: wasd.forceActiveFocus()
+                Text {
+                    anchors.left: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: qsTr("Use perspective transform")
+                }
             }
             CheckBox {
                 id: autoScaleControl
-                text: qsTr("Use fixed-sized gizmo")
                 checked: true
+                onCheckedChanged: wasd.forceActiveFocus()
+                Text {
+                    anchors.left: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: qsTr("Use fixed-sized gizmo")
+                }
             }
             CheckBox {
                 id: showLabelsControl
-                text: qsTr("Show labels")
                 checked: true
+                onCheckedChanged: wasd.forceActiveFocus()
+                Text {
+                    anchors.left: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: qsTr("Show labels")
+                }
             }
             Item {
                 Layout.fillHeight: true
-            }
-
-            TapHandler {
-                acceptedButtons: Qt.LeftButton | Qt.RightButton
-                onTapped: menuButton.checked = false
             }
         }
     }
