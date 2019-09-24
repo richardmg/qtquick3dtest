@@ -1,7 +1,10 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
+
 import QtQuick3D 1.0
 import QtQuick3D.Helpers 1.0
+
+import QtGraphicalEffects 1.0
 
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.12
@@ -80,9 +83,14 @@ ApplicationWindow {
         }
     }
 
-    Sky {
+    RadialGradient {
         id: sceneBg
         anchors.fill: parent
+
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: Qt.rgba(0.7, 0.7, 0.8, 1) }
+            GradientStop { position: 0.5; color: Qt.rgba(0.5, 0.5, 0.5, 1) }
+        }
 
         View3D {
             id: worldView
@@ -106,7 +114,7 @@ ApplicationWindow {
         }
 
         Overlay2D {
-            id: overlayGizmo2D
+            id: overlayLabels
             targetNode: nodeBeingManipulated
             targetView: worldView
             offsetY: 100
@@ -134,8 +142,16 @@ ApplicationWindow {
         }
     }
 
+    ToolButton {
+        id: menuButton
+        text: "|||"
+        rotation: 90
+        checkable: true
+        onCheckedChanged: wasd.forceActiveFocus()
+    }
+
     Item {
-        id: burgerMenu
+        id: menu
         anchors.fill: parent
         visible: menuButton.checked
         z: 100
@@ -196,14 +212,6 @@ ApplicationWindow {
                 onTapped: menuButton.checked = false
             }
         }
-    }
-
-    ToolButton {
-        id: menuButton
-        text: "|||"
-        rotation: 90
-        checkable: true
-        onCheckedChanged: wasd.forceActiveFocus()
     }
 
 }
