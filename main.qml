@@ -17,7 +17,7 @@ ApplicationWindow {
     height: 480
     visible: true
 
-    property Node nodeBeingManipulated: initalPot
+    property Node nodeBeingManipulated: pot1
 
     Node {
         id: mainScene
@@ -44,10 +44,24 @@ ApplicationWindow {
         }
 
         Model {
-            id: initalPot
-            objectName: "initalPot"
+            id: pot1
+            objectName: "Pot 1"
             y: 200
             rotation: Qt.vector3d(0, 0, 45)
+            source: "meshes/Teapot.mesh"
+            scale: Qt.vector3d(20, 20, 20)
+            materials: DefaultMaterial {
+                diffuseColor: "salmon"
+            }
+        }
+
+        Model {
+            id: pot2
+            objectName: "Pot 2"
+            x: 200
+            y: 200
+            z: 300
+            rotation: Qt.vector3d(45, 45, 0)
             source: "meshes/Teapot.mesh"
             scale: Qt.vector3d(20, 20, 20)
             materials: DefaultMaterial {
