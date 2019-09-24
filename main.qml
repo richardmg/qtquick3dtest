@@ -67,7 +67,7 @@ ApplicationWindow {
             rotation: camera1.rotation
         }
 
-        Arrows {
+        MoveGizmo {
             id: targetGizmo
             scale: autoScaleControl.checked ? autoScale.getScale(Qt.vector3d(5, 5, 5)) : Qt.vector3d(5, 5, 5)
             highlightOnHover: true

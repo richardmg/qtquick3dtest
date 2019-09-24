@@ -24,7 +24,7 @@ View3D {
             rotation: targetCamera.rotationInScene
         }
 
-        Arrows {
+        MoveGizmo {
             id: sceneGizmo
             Connections {
                 target: localCamera
