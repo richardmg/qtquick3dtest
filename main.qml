@@ -45,7 +45,7 @@ ApplicationWindow {
 
         Model {
             id: pot1
-            objectName: "Pot 1"
+            objectName: "First pot"
             y: 200
             rotation: Qt.vector3d(0, 0, 45)
             source: "meshes/Teapot.mesh"
@@ -57,7 +57,7 @@ ApplicationWindow {
 
         Model {
             id: pot2
-            objectName: "Pot 2"
+            objectName: "Second pot"
             x: 200
             y: 200
             z: 300
@@ -107,7 +107,7 @@ ApplicationWindow {
         }
 
         View3D {
-            id: worldView
+            id: mainView
             anchors.fill: parent
             camera: camera1
             scene: mainScene
@@ -130,7 +130,7 @@ ApplicationWindow {
         Overlay2D {
             id: overlayLabel
             targetNode: nodeBeingManipulated
-            targetView: worldView
+            targetView: mainView
             offsetY: 100
             visible: showLabelsControl.checked
 
@@ -151,8 +151,22 @@ ApplicationWindow {
 
         WasdController {
             id: wasd
-            controlledObject: worldView.camera
+            controlledObject: mainView.camera
             acceptedButtons: Qt.RightButton
+        }
+
+        TapHandler {
+            onTapped: {
+                // Pick a pot, and use it as target for the gizmo
+                var pickResult = mainView.pick(point.position.x, point.position.y)
+                print("picked in mainView:", pickResult.objectHit)
+                if (pickResult.objectHit !== null)
+                    nodeBeingManipulated = pickResult.objectHit
+
+                // Dummy test for now, just to show how it doesn't work to click on an arrow/gizmo
+                var pickResult2 = overlayView.pick(point.position.x, point.position.y)
+                print("picked in overlayView:", pickResult2.objectHit)
+            }
         }
     }
 
