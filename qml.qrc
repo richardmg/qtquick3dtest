@@ -2,17 +2,10 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>meshes/Teapot.mesh</file>
-        <file>Lowpolylandscape.qml</file>
         <file>meshes/Plane.mesh</file>
-        <file>Sun.qml</file>
-        <file>ConeLight.qml</file>
-        <file>Sky.qml</file>
         <file>meshes/Arrow.mesh</file>
         <file>Arrow.qml</file>
         <file>MoveGizmo.qml</file>
-        <file>FixedScreenSizeNode.qml</file>
-        <file>WorldScene.qml</file>
-        <file>OverlayScene.qml</file>
         <file>CameraGizmo.qml</file>
         <file>Overlay2D.qml</file>
         <file>Overlay3D.qml</file>
