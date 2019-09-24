@@ -39,6 +39,7 @@ ApplicationWindow {
         }
 
         AxisHelper {
+            id: axisGrid
             enableXZGrid: true
             enableAxisLines: false
         }
@@ -160,7 +161,8 @@ ApplicationWindow {
                 // Pick a pot, and use it as target for the gizmo
                 var pickResult = mainView.pick(point.position.x, point.position.y)
                 print("picked in mainView:", pickResult.objectHit)
-                if (pickResult.objectHit !== null)
+
+                if (pickResult.objectHit && pickResult.objectHit !== axisGrid)
                     nodeBeingManipulated = pickResult.objectHit
 
                 // Dummy test for now, just to show how it doesn't work to click on an arrow/gizmo

@@ -9,6 +9,8 @@ Item {
     property real offsetX: 0
     property real offsetY: 0
 
+    onTargetNodeChanged: updateOverlay()
+
     Connections {
         target: targetNode
         onGlobalTransformChanged: updateOverlay()
