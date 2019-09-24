@@ -76,7 +76,7 @@ ApplicationWindow {
             rotation: globalControl.checked ? Qt.vector3d(0, 0, 0) : window.nodeBeingManipulated.rotationInScene
         }
 
-        Overlay3D {
+        AutoScaleHelper {
             id: autoScale
             overlayView: overlayView
             position: targetGizmo.positionInScene
@@ -114,7 +114,7 @@ ApplicationWindow {
         }
 
         Overlay2D {
-            id: overlayLabels
+            id: overlayLabel
             targetNode: nodeBeingManipulated
             targetView: worldView
             offsetY: 100
