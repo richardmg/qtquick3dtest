@@ -17,6 +17,15 @@ Node {
         onGlobalTransformChanged: updateScale()
     }
 
+    Timer {
+        // Work-around the fact that the project matrix in the camera is not
+        // calculated until the first frame is rendered, so the initial
+        // calls to mapFrom3DScene() etc will fail.
+        interval: 1
+        running: true
+        onTriggered: updateScale()
+    }
+
     function getScale(baseScale)
     {
         return Qt.vector3d(baseScale.x * relativeScale, baseScale.y * relativeScale, baseScale.z * relativeScale)

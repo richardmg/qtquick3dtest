@@ -17,6 +17,26 @@ View3D {
     implicitHeight: 50
     camera: localCamera
 
+    function updateGizmo()
+    {
+        sceneGizmo.position = localCamera.mapFromViewport(Qt.vector3d(0.5, 0.5, 180))
+
+        var xLabelScenePos = sceneGizmo.arrowX.mapPositionToScene(Qt.vector3d(0, 2, -12));
+        var xLabelViewPos = root.mapFrom3DScene(xLabelScenePos)
+        xLabel.x = xLabelViewPos.x - xLabel.width
+        xLabel.y = xLabelViewPos.y - xLabel.height
+
+        var yLabelScenePos = sceneGizmo.arrowY.mapPositionToScene(Qt.vector3d(4, 0, -9.5));
+        var yLabelViewPos = root.mapFrom3DScene(yLabelScenePos)
+        yLabel.x = yLabelViewPos.x - yLabel.width
+        yLabel.y = yLabelViewPos.y - yLabel.height
+
+        var zLabelScenePos = sceneGizmo.arrowZ.mapPositionToScene(Qt.vector3d(0, 2, -12));
+        var zLabelViewPos = root.mapFrom3DScene(zLabelScenePos)
+        zLabel.x = zLabelViewPos.x - zLabel.width
+        zLabel.y = zLabelViewPos.y - zLabel.height
+    }
+
     scene: Node {
         Camera {
             id: localCamera
@@ -28,28 +48,17 @@ View3D {
             id: sceneGizmo
             Connections {
                 target: localCamera
-                onGlobalTransformChanged: {
-                    // A problem here is that the target and this node belongs to two different
-                    // views. And therefore they might not be completly in sync. Especially, the
-                    // first emit does not seem to get throught...
-                    sceneGizmo.position = localCamera.mapFromViewport(Qt.vector3d(0.5, 0.5, 180))
-
-                    var xLabelScenePos = sceneGizmo.arrowX.mapPositionToScene(Qt.vector3d(0, 2, -12));
-                    var xLabelViewPos = root.mapFrom3DScene(xLabelScenePos)
-                    xLabel.x = xLabelViewPos.x - xLabel.width
-                    xLabel.y = xLabelViewPos.y - xLabel.height
-
-                    var yLabelScenePos = sceneGizmo.arrowY.mapPositionToScene(Qt.vector3d(4, 0, -9.5));
-                    var yLabelViewPos = root.mapFrom3DScene(yLabelScenePos)
-                    yLabel.x = yLabelViewPos.x - yLabel.width
-                    yLabel.y = yLabelViewPos.y - yLabel.height
-
-                    var zLabelScenePos = sceneGizmo.arrowZ.mapPositionToScene(Qt.vector3d(0, 2, -12));
-                    var zLabelViewPos = root.mapFrom3DScene(zLabelScenePos)
-                    zLabel.x = zLabelViewPos.x - zLabel.width
-                    zLabel.y = zLabelViewPos.y - zLabel.height
-                }
+                onGlobalTransformChanged: updateGizmo()
             }
+        }
+
+        Timer {
+            // Work-around the fact that the project matrix in the camera is not
+            // calculated until the first frame is rendered, so the initial
+            // calls to mapPositionToScene() will fail.
+            interval: 1
+            running: true
+            onTriggered: updateGizmo()
         }
     }
 
